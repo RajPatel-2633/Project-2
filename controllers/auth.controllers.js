@@ -1,10 +1,11 @@
 import jwt from "jsonwebtoken";
 import nodemailer from "nodemailer";
+import bcrypt from "bcrypt";
 import User from "../models/User.models.js";
 import { BadRequestError, ConflictError, NotFoundError, UnauthorizedError } from "../utils/ApiError.utils.js";
-import ApiResponse from "../utils/ApiResponse.utils";
-import asyncHandler from "../utils/AsyncHandler.utils";
-import bcrypt from "bcrypt";
+import ApiResponse from "../utils/ApiResponse.utils.js";
+import asyncHandler from "../utils/AsyncHandler.utils.js";
+
 
 const registerUser = asyncHandler(async(req,res,next)=>{
     const {name,email,password}=req.body;
@@ -72,7 +73,7 @@ const loginUser = asyncHandler(async(req,res,next)=>{
     return res.status(200).json(new ApiResponse(200,accessToken,"User Logged in Successfully"));
 });
 
-const getProfile = asyncHandler((req,res,next)=>{
+const getProfile = asyncHandler(async(req,res,next)=>{
     const id = req.user.id;
     const user = await User.findById(id).select("-password");
     if(!user){
@@ -132,7 +133,7 @@ const forgotPassword = asyncHandler(async(req,res,next)=>{
 
 });
 
-const verifyOTP = asyncHandler((req,res,next)=>{
+const verifyOTP = asyncHandler(async(req,res,next)=>{
     const {email,OTP} = req.body;
     if(!email || !OTP){
         throw new BadRequestError("All Fields are Required");
@@ -151,7 +152,7 @@ const verifyOTP = asyncHandler((req,res,next)=>{
     return res.status(200).json(new ApiResponse("OTP verified successfully"));
 });
 
-const resetPassword = asyncHandler((req,res,next)=>{
+const resetPassword = asyncHandler(async(req,res,next)=>{
     const{email,newPassword}=req.body;
     if(!email || !newPassword){
         throw new BadRequestError("All Fields are required");
@@ -166,10 +167,10 @@ const resetPassword = asyncHandler((req,res,next)=>{
     return res.status(200).json(new ApiResponse(200,null,"Password Updated Successfully"));
 });
 
-const updateProfile =  asyncHandler((req,res,next)=>{
+const updateProfile =  asyncHandler(async(req,res,next)=>{
     const userId = req.user.id;
     const {name,newPassword} = req.body;
-    const user = await User.findOneAndUpdate(userId);
+    const user = await User.findById(userId);
     if(!user){
         throw new NotFoundError("User Not Found");
     }
@@ -185,7 +186,7 @@ const updateProfile =  asyncHandler((req,res,next)=>{
     
 });
 
-const logoutUser = asyncHandler((req,res,next)=>{
+const logoutUser = asyncHandler(async(req,res,next)=>{
     const id = req.user.id;
     res.clearCookie('accessToken',{
         secure:true,

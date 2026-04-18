@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { ForbiddenError, NotFoundError, UnauthorizedError } from "../utils/ApiError.utils";
+import { ForbiddenError, NotFoundError, UnauthorizedError } from "../utils/ApiError.utils.js";
 
 export const authMiddleware = async(req,res,next)=>{
     try{
@@ -8,7 +8,7 @@ export const authMiddleware = async(req,res,next)=>{
             throw new NotFoundError("Access Token Missing");
         }
         const decoded = jwt.verify(accessToken,process.env.ACCESS_SECRET);
-        req.id = decoded;
+        req.user = decoded;
         next();
     } catch(err){
         throw new UnauthorizedError("Invalid or Expired Token");

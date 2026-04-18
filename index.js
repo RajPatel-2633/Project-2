@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser";
 import dotenv from "dotenv";
 import errorMiddleware from "./middleware/error.middleware.js";
 import authRoutes from "./routes/auth.routes.js"
+import db from "./utils/db.utils.js";
 
 dotenv.config();
 
@@ -21,6 +22,7 @@ app.use(cors({
 app.use(express.json());
 app.use(cookieParser());
 
+db();
 // Write all user defined routes here;
 app.use("/api/v1/auth",authRoutes);
 
