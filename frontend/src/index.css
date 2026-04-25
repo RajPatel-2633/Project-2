@@ -16,9 +16,69 @@
     font-family: var(--font-sans);
     background-color: var(--color-astra-bg);
     color: var(--color-astra-dark);
+    overflow-x: hidden;
   }
   
   h1, h2, h3, h4, h5, h6, .font-serif {
     font-family: var(--font-serif);
+  }
+}
+
+@layer utilities {
+  .text-gold-3d {
+    background: linear-gradient(180deg, #EAD7A1 0%, #D4B26A 40%, #A57D33 60%, #E8D097 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    filter: drop-shadow(0px 1px 1px rgba(0,0,0,0.4)) drop-shadow(0px -1px 0px rgba(255,255,255,0.4));
+  }
+
+  .bg-metallic {
+    background: linear-gradient(180deg, #E6D4AA 0%, #DBBF86 30%, #C4A15A 60%, #D4B675 100%);
+    box-shadow: 
+      inset 0px 2px 3px rgba(255, 255, 255, 0.7),
+      inset 0px -2px 4px rgba(0, 0, 0, 0.3),
+      0px 4px 6px rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(139, 90, 43, 0.4);
+  }
+
+  .bg-parchment {
+    background: radial-gradient(circle at center, #F4E8D3 0%, #E0CDAA 100%);
+    box-shadow: 
+      inset 0px 0px 20px rgba(100, 60, 20, 0.15),
+      2px 4px 8px rgba(0, 0, 0, 0.2);
+    /* Simulated torn edges via SVG filter or complex border-radius, using simple border-radius for now */
+    border-radius: 8px 12px 10px 8px;
+    border: 1px solid rgba(160, 120, 80, 0.3);
+  }
+
+  .engraved-oval {
+    box-shadow: 
+      inset 0px 3px 5px rgba(0, 0, 0, 0.2),
+      inset 0px -2px 3px rgba(255, 255, 255, 0.5);
+    background: #DDC8A3;
+    border-radius: 100%;
+  }
+
+  .astrolabe-ring {
+    background: conic-gradient(from 0deg, #E4CD96, #C79F51, #FFF2D1, #B28336, #E4CD96);
+    box-shadow: 
+      inset 0px 2px 4px rgba(0,0,0,0.4),
+      inset 0px -2px 4px rgba(255,255,255,0.8),
+      0px 4px 8px rgba(0,0,0,0.5);
+  }
+
+  .astrolabe-inner {
+    box-shadow: 
+      inset 0px 4px 8px rgba(0,0,0,0.5),
+      inset 0px -2px 4px rgba(255,255,255,0.4);
+  }
+
+  @keyframes subtle-pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.8; }
+  }
+
+  .animate-subtle-pulse {
+    animation: subtle-pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
 }

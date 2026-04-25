@@ -1,7 +1,14 @@
-import { Link } from 'react-router-dom'
+import { Link, useNavigate } from 'react-router-dom'
 import { DrawingChart } from './Graphics'
 
 const LoginForm = () => {
+  const navigate = useNavigate();
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    navigate('/dashboard');
+  };
+
   return (
     <div className="relative w-full lg:w-1/2 flex flex-col p-8 justify-between items-center overflow-hidden min-h-screen lg:min-h-0">
 
@@ -24,7 +31,7 @@ const LoginForm = () => {
         {/* Semi-Bold Login Header */}
         <h1 className="text-4xl font-serif text-astra-brown mt-6 mb-8 text-center font-semibold">Login</h1>
 
-        <form className="w-full space-y-4" onSubmit={(e) => e.preventDefault()}>
+        <form className="w-full space-y-4" onSubmit={handleSubmit}>
           <div className="space-y-1">
             <label className="text-sm font-medium text-astra-brown">Email Address</label>
             <input
