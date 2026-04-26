@@ -1,5 +1,5 @@
-import  Horoscope  from "../models/Horoscope.model.js";
-import  Panchang  from "../models/Panchang.model.js";
+import  Horoscope  from "../models/Horoscope.models.js";
+import  Panchang  from "../models/Panchang.models.js";
 
 export const seedAstroData = async () => {
     const signs = ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"];
