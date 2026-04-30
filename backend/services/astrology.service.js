@@ -106,7 +106,7 @@ export const calculateVedicChart = (dob, tob, lat, lng) => {
         };
 
     } catch (err) {
-        console.error("❌ Astrology Service Error:", err.message);
+        console.error(" Astrology Service Error:", err.message);
         throw err;
     }
 };

@@ -8,6 +8,7 @@ import birthProfileRoutes from "./routes/birthProfile.routes.js"
 import astroRoutes from "./routes/astro.routes.js"
 import chartRoutes from "./routes/birthChart.routes.js"
 import chatRoutes from "./routes/chat.routes.js"
+import kundliMatchRoutes from "./routes/kundliMatch.routes.js"
 import db from "./utils/db.utils.js";
 
 dotenv.config();
@@ -33,6 +34,7 @@ app.use("/api/v1/birthProfile",birthProfileRoutes);
 app.use("/api/v1/astro",astroRoutes);
 app.use("/api/v1/charts",chartRoutes);
 app.use("/api/v1/chat",chatRoutes);
+app.use("/api/v1/kundliMatch",kundliMatchRoutes);
 
 app.use(errorMiddleware);
 
