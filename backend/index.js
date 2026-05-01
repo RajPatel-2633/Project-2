@@ -9,7 +9,10 @@ import astroRoutes from "./routes/astro.routes.js"
 import chartRoutes from "./routes/birthChart.routes.js"
 import chatRoutes from "./routes/chat.routes.js"
 import kundliMatchRoutes from "./routes/kundliMatch.routes.js"
+import compatibilityRoutes from "./routes/compatibility.routes.js"
+import transitRoutes from "./routes/transit.routes.js"
 import db from "./utils/db.utils.js";
+import { initialiseTransitAutomation } from "./utils/transitInit.utils.js";
 
 dotenv.config();
 
@@ -28,6 +31,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 db();
+initialiseTransitAutomation();
 // Write all user defined routes here;
 app.use("/api/v1/auth",authRoutes);
 app.use("/api/v1/birthProfile",birthProfileRoutes);
@@ -35,6 +39,8 @@ app.use("/api/v1/astro",astroRoutes);
 app.use("/api/v1/charts",chartRoutes);
 app.use("/api/v1/chat",chatRoutes);
 app.use("/api/v1/kundliMatch",kundliMatchRoutes);
+app.use("/api/v1/compatibility",compatibilityRoutes);
+app.use("/api/v1/transit",transitRoutes);
 
 app.use(errorMiddleware);
 
