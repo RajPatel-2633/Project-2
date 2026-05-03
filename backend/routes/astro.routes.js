@@ -6,8 +6,9 @@ const router = express.Router();
 
 router.get("/seed-db", async (req, res) => {
     try {
-        await seedAstroData();
-        res.status(200).send("Database Seeded Successfully! 🌌");
+        const useAI = req.query.ai === 'true';
+        await seedAstroData(useAI);
+        res.status(200).send(`Database Seeded Successfully! 🌌 (${useAI ? 'AI Generated' : 'Stochastic'})`);
     } catch (err) {
         res.status(500).send("Seeding failed: " + err.message);
     }

@@ -6,8 +6,8 @@ const router = express.Router();
 
 router.post("/initialise-chat",authMiddleware,initialiseChat);
 router.post("/send-message/:sessionId",authMiddleware,sendMessage);
-router.get("/get-sessions/:sessionId",authMiddleware,getUserSessions);
-router.get("/get-chat-history",authMiddleware,getChatHistory);
+router.get("/sessions", authMiddleware, getUserSessions);
+router.get("/messages/:sessionId", authMiddleware, getChatHistory);
 
 
 

@@ -1,4 +1,4 @@
-import { Body, Equator, Observer, AstroTime } from 'astronomy-engine';
+import { Body, Equator, Observer, AstroTime, SiderealTime, e_tilt, Ecliptic } from 'astronomy-engine';
 
 const RASHI_NAMES = [
     "Aries", "Taurus", "Gemini", "Cancer", "Leo", "Virgo", 
@@ -33,6 +33,23 @@ export const calculateVedicChart = (dob, tob, lat, lng) => {
         // Ensure lat/lng are numbers for the observer
         const obs = new Observer(Number(lat), Number(lng), 0);
 
+        // --- ASCENDANT CALCULATION ---
+        const LST_hours = SiderealTime(targetTime) + (Number(lng) / 15);
+        const LST_deg = (LST_hours % 24) * 15;
+        const RAMC = LST_deg * Math.PI / 180;
+        const obliq = e_tilt(targetTime).tobl * Math.PI / 180;
+        const latRad = Number(lat) * Math.PI / 180;
+
+        const y = Math.cos(RAMC);
+        const x = -Math.sin(RAMC) * Math.cos(obliq) - Math.tan(latRad) * Math.sin(obliq);
+        let ascendant_tropical = Math.atan2(y, x) * 180 / Math.PI;
+        if (ascendant_tropical < 0) ascendant_tropical += 360;
+
+        const ascendant_vedic = (ascendant_tropical - ayanamsha + 360) % 360;
+        const ascendant_sign_index = Math.floor(ascendant_vedic / 30);
+        const ascendant_sign = RASHI_NAMES[ascendant_sign_index];
+        // -----------------------------
+
         const bodies = [
             { id: Body.Sun, name: "Sun" },
             { id: Body.Moon, name: "Moon" },
@@ -48,15 +65,18 @@ export const calculateVedicChart = (dob, tob, lat, lng) => {
         // (body, date, observer, ofdate, aberration)
         const processedPlanets = bodies.map(b => {
             const equ = Equator(b.id, targetTime, obs, false, false);
+            const ecl = Ecliptic(equ.vec);
             
-            // Convert Right Ascension (RA) to Degrees and subtract Ayanamsha
-            const rawLong = (equ.ra * 15 - ayanamsha + 360) % 360;
+            // Subtract Ayanamsha from Tropical Ecliptic Longitude to get Sidereal Longitude
+            const rawLong = (ecl.elon - ayanamsha + 360) % 360;
+            const planet_sign_index = Math.floor(rawLong / 30);
+            const house = ((planet_sign_index - ascendant_sign_index + 12) % 12) + 1;
             
             return {
                 name: b.name,
-                sign: RASHI_NAMES[Math.floor(rawLong / 30)],
+                sign: RASHI_NAMES[planet_sign_index],
                 degree: parseFloat((rawLong % 30).toFixed(2)),
-                house: 1, // Default house for basic rashi chart
+                house: house,
                 is_retrograde: false 
             };
         });
@@ -64,25 +84,31 @@ export const calculateVedicChart = (dob, tob, lat, lng) => {
         // 3. Rahu & Ketu (Shadow Planets)
         // Using Moon's position to derive the Lunar Nodes
         const moonEqu = Equator(Body.Moon, targetTime, obs, false, false);
-        const moonLong = (moonEqu.ra * 15 - ayanamsha + 360) % 360;
+        const moonEcl = Ecliptic(moonEqu.vec);
+        const moonLong = (moonEcl.elon - ayanamsha + 360) % 360;
         
         // Approximate Rahu (Ascending Node)
         const rahuRawLong = (moonLong + 90) % 360; 
         const ketuRawLong = (rahuRawLong + 180) % 360;
 
+        const rahu_sign_index = Math.floor(rahuRawLong / 30);
+        const ketu_sign_index = Math.floor(ketuRawLong / 30);
+        const rahu_house = ((rahu_sign_index - ascendant_sign_index + 12) % 12) + 1;
+        const ketu_house = ((ketu_sign_index - ascendant_sign_index + 12) % 12) + 1;
+
         processedPlanets.push(
             {
                 name: "Rahu",
-                sign: RASHI_NAMES[Math.floor(rahuRawLong / 30)],
+                sign: RASHI_NAMES[rahu_sign_index],
                 degree: parseFloat((rahuRawLong % 30).toFixed(2)),
-                house: 1,
+                house: rahu_house,
                 is_retrograde: true
             },
             {
                 name: "Ketu",
-                sign: RASHI_NAMES[Math.floor(ketuRawLong / 30)],
+                sign: RASHI_NAMES[ketu_sign_index],
                 degree: parseFloat((ketuRawLong % 30).toFixed(2)),
-                house: 1,
+                house: ketu_house,
                 is_retrograde: true
             }
         );
@@ -92,7 +118,7 @@ export const calculateVedicChart = (dob, tob, lat, lng) => {
         const pada = Math.floor((moonLong % (360 / 27)) / (360 / 108)) + 1;
 
         return {
-            ascendant: "Aries", // Placeholder: requires house system logic
+            ascendant: ascendant_sign,
             sun_sign: processedPlanets.find(p => p.name === "Sun").sign,
             moon_sign: processedPlanets.find(p => p.name === "Moon").sign,
             nakshatra: NAKSHATRAS[nakIndex],

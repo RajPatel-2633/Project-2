@@ -76,7 +76,13 @@ const matchProfile = asyncHandler(async(req,res)=>{
     `;
     
 
-    const summary = await getGeminiResponse(prompt,[],"You are a professional Vedic Jyotish Expert");
+    let summary = "AI analysis is currently unavailable, but your astrological match scores have been calculated successfully.";
+    try {
+        summary = await getGeminiResponse(prompt,[],"You are a professional Vedic Jyotish Expert");
+    } catch (error) {
+        console.error("Gemini API Error during Kundli Match:", error.message);
+    }
+
     const finalMatch = await KundliMatch.create({
         user_id:userId,
         profile_1_id: chart1.profile_id,
@@ -88,7 +94,7 @@ const matchProfile = asyncHandler(async(req,res)=>{
         ai_summary: summary
     });
 
-    return res.status(200).json(new ApiResponse(200,finalMatch,"Match Analysis Successful"));
+    return res.status(200).json(new ApiResponse(200, { match: finalMatch, chart1, chart2 }, "Match Analysis Successful"));
 });
 
 const getMatchHistory = asyncHandler(async(req,res)=>{

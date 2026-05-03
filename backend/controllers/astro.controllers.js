@@ -7,7 +7,7 @@ import { getTodayDate } from "../utils/todaysdate.utils.js";
 
 const getAllHoroscopes = asyncHandler(async(req,res)=>{
     const today = getTodayDate();
-    const data = await Horoscope.findOne({date:today}); 
+    const data = await Horoscope.find({date:today}); 
 
     if(!data || data.length === 0){
         throw new NotFoundError("Horoscope data not found for today. Please seed the database.");

@@ -13,6 +13,7 @@ import compatibilityRoutes from "./routes/compatibility.routes.js"
 import transitRoutes from "./routes/transit.routes.js"
 import db from "./utils/db.utils.js";
 import { initialiseTransitAutomation } from "./utils/transitInit.utils.js";
+import { initCronJobs } from "./utils/cron.js";
 
 dotenv.config();
 
@@ -32,6 +33,7 @@ app.use(cookieParser());
 
 db();
 initialiseTransitAutomation();
+initCronJobs();
 // Write all user defined routes here;
 app.use("/api/v1/auth",authRoutes);
 app.use("/api/v1/birthProfile",birthProfileRoutes);

@@ -23,6 +23,10 @@ const birthChartSchema = new mongoose.Schema({
         }
     ],
     raw_data:Object,
+    interpretations: {
+        type: Object,
+        default: {}
+    }
 },{
     timestamps:true
 });

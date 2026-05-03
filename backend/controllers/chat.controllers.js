@@ -126,12 +126,8 @@ const getChatHistory = asyncHandler(async(req,res)=>{
 });
 
 const getUserSessions = asyncHandler(async(req,res)=>{
-    const {user_id} = req.query;
-    if(user_id){
-        throw new BadRequestError("User ID is required to fetch sessions");
-    }
-
-    const sessions = (await ChatSession.find({user_id})).sort({createdAt:-1}).populate("profile_id","name");
+    const userId = req.user.id;
+    const sessions = await ChatSession.find({user_id: userId}).sort({createdAt:-1}).populate("profile_id","name");
 
     return res.status(200).json(new ApiResponse(200,sessions,"User sessions retrieved successfully"));
 });
