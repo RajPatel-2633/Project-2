@@ -17,7 +17,15 @@
     background-color: var(--color-astra-bg);
     color: var(--color-astra-dark);
     overflow-x: hidden;
+    .animate-pulse-slow {
+    animation: pulse 4s cubic-bezier(0.4, 0, 0.6, 1) infinite;
   }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 0.4; transform: scale(1); }
+    50% { opacity: 0.2; transform: scale(0.95); }
+  }
+}
   
   h1, h2, h3, h4, h5, h6, .font-serif {
     font-family: var(--font-serif);

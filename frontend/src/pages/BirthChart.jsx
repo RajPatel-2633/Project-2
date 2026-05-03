@@ -1,11 +1,11 @@
 import React, { useRef, useState, useEffect } from 'react';
 import Navbar from '../components/layout/Navbar';
-import HeroSection from '../components/HeroSection';
 import BirthDetailsForm from '../components/BirthDetailsForm';
 import ChartResults from '../components/chart/ChartResults';
-import { ZodiacLoader } from '../components/Graphics';
+import { ZodiacLoader, CelestialIllustration } from '../components/Graphics';
 import useAstroStore from '../store/useAstroStore';
 import { ErrorBoundary } from 'react-error-boundary';
+import { Trash2, User, ChevronRight, Bookmark } from 'lucide-react';
 
 function Fallback({ error, resetErrorBoundary }) {
   return (
@@ -45,13 +45,10 @@ const BirthChart = () => {
     }
   };
 
-  const handleProfileSelect = async (e) => {
-    const profileId = e.target.value;
+  const selectProfile = async (profileId) => {
     if (!profileId) return;
-
     setShowResults(false);
     const success = await fetchChartByProfileId(profileId);
-
     if (success) {
       setShowResults(true);
       setTimeout(() => {
@@ -59,6 +56,15 @@ const BirthChart = () => {
           resultsRef.current.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }, 100);
+    }
+  };
+
+  const { deleteProfile, activeProfileId } = useAstroStore();
+
+  const handleDeleteProfile = async (e, profileId) => {
+    e.stopPropagation();
+    if (window.confirm('Are you sure you want to delete this profile?')) {
+      await deleteProfile(profileId);
     }
   };
 
@@ -92,14 +98,77 @@ const BirthChart = () => {
       <Navbar />
 
       <main className="flex-grow flex flex-col w-full relative z-10">
-        {/* Top Split Section */}
-        <div className="min-h-[calc(100vh-80px)] flex flex-col lg:flex-row w-full">
-          <BirthDetailsForm
-            onSubmit={handleFormSubmit}
-            profiles={profiles}
-            onProfileSelect={handleProfileSelect}
-          />
-          <HeroSection />
+        {/* Balanced Split Layout: Form + Profiles */}
+        <div className="w-full px-[8vw] py-16 flex flex-col lg:flex-row gap-16 justify-center items-start">
+          {/* Main Form Area: Centered in its section */}
+          <div className="flex-grow lg:w-[65%] flex flex-col items-center">
+            <div className="w-full max-w-2xl">
+              <BirthDetailsForm
+                onSubmit={handleFormSubmit}
+              />
+            </div>
+          </div>
+
+          {/* Sidebar Area: Saved Profiles */}
+          <aside className="lg:w-[35%] flex flex-col gap-6">
+            <div className="bg-parchment p-6 rounded-2xl border border-[#8B6E4A]/30 shadow-lg sticky top-28">
+              <div className="flex items-center gap-2 mb-6 border-b border-[#8B6E4A]/10 pb-4">
+                <Bookmark className="w-5 h-5 text-[#8B6E4A]" />
+                <h3 className="font-serif font-bold text-[#4A3319] text-xl">Saved Profiles</h3>
+              </div>
+
+              <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 custom-scrollbar">
+                {profiles && profiles.length > 0 ? (
+                  profiles.map((p) => (
+                    <div 
+                      key={p._id}
+                      onClick={() => selectProfile(p._id)}
+                      className={`group p-4 rounded-xl border transition-all cursor-pointer flex items-center justify-between gap-3 ${
+                        activeProfileId === p._id 
+                        ? 'bg-[#C4A15A]/20 border-[#C4A15A] shadow-sm' 
+                        : 'bg-white/40 border-[#8B6E4A]/10 hover:border-[#C4A15A]/40 hover:bg-white/60'
+                      }`}
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <div className={`w-8 h-8 rounded-full flex items-center justify-center flex-shrink-0 ${activeProfileId === p._id ? 'bg-[#C4A15A] text-white' : 'bg-[#EBD6A7] text-[#8B6E4A]'}`}>
+                          <User className="w-4 h-4" />
+                        </div>
+                        <div className="min-w-0">
+                          <p className="text-sm font-bold text-[#4A3319] truncate">{p.label}</p>
+                          <p className="text-[10px] text-[#8B6E4A] font-medium truncate uppercase tracking-tighter">{p.name}</p>
+                        </div>
+                      </div>
+                      
+                      <div className="flex items-center gap-1">
+                        <button 
+                          onClick={(e) => handleDeleteProfile(e, p._id)}
+                          className="p-1.5 rounded-lg text-red-400 hover:text-red-600 hover:bg-red-50 transition-all opacity-0 group-hover:opacity-100"
+                          title="Delete Profile"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                        <ChevronRight className={`w-4 h-4 transition-transform ${activeProfileId === p._id ? 'text-[#C4A15A]' : 'text-[#8B6E4A]/30 group-hover:translate-x-0.5'}`} />
+                      </div>
+                    </div>
+                  ))
+                ) : (
+                  <div className="text-center py-12 px-6 bg-white/20 rounded-2xl border border-dashed border-[#8B6E4A]/30 flex flex-col items-center gap-6">
+                    <CelestialIllustration className="w-32 h-32 text-[#8B6E4A] opacity-40 animate-pulse-slow" />
+                    <p className="text-sm text-[#8B6E4A] italic leading-relaxed">
+                      No profiles saved yet.<br/>
+                      <span className="text-[10px] uppercase font-bold tracking-widest mt-2 block opacity-60">Generate your first chart to save details.</span>
+                    </p>
+                  </div>
+                )}
+              </div>
+
+              <div className="mt-6 pt-6 border-t border-[#8B6E4A]/10">
+                 <p className="text-[10px] text-[#8B6E4A] font-medium leading-relaxed italic">
+                   Tip: Click a profile to quickly reload its birth data and planetary chart.
+                 </p>
+              </div>
+            </div>
+          </aside>
         </div>
 
         {/* Bottom Results Section */}

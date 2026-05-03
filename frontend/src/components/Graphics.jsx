@@ -257,3 +257,37 @@ export const AnimatedKundliChart = ({ chartData }) => {
     </div>
   );
 };
+
+export const CelestialIllustration = ({ className = "" }) => (
+  <svg viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg" className={className}>
+    <circle cx="100" cy="100" r="90" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 4" className="opacity-30" />
+    <circle cx="100" cy="100" r="70" stroke="currentColor" strokeWidth="1" className="opacity-20" />
+    
+    {/* Geometric mandala patterns */}
+    <path d="M100 10 L115 85 L190 100 L115 115 L100 190 L85 115 L10 100 L85 85 Z" stroke="currentColor" strokeWidth="0.5" className="opacity-40" />
+    <path d="M100 30 L110 90 L170 100 L110 110 L100 170 L90 110 L30 100 L90 90 Z" stroke="currentColor" strokeWidth="0.5" className="opacity-30" />
+    
+    {/* Moons */}
+    <path d="M160 40 A 20 20 0 1 0 140 60 A 15 15 0 1 1 160 40" fill="currentColor" className="opacity-20" />
+    <path d="M40 160 A 20 20 0 1 1 60 140 A 15 15 0 1 0 40 160" fill="currentColor" className="opacity-20" />
+    
+    {/* Orbits */}
+    <circle cx="100" cy="100" r="45" stroke="currentColor" strokeWidth="0.5" strokeDasharray="2 6" className="opacity-50" />
+    
+    {/* Sun center */}
+    <circle cx="100" cy="100" r="15" fill="currentColor" className="opacity-10" />
+    <circle cx="100" cy="100" r="8" fill="currentColor" className="opacity-30" />
+    
+    {/* Scattered Stars */}
+    {[
+      [150, 70], [170, 120], [130, 160], [70, 170], [30, 130], [40, 70], [80, 30]
+    ].map(([x, y], i) => (
+      <path 
+        key={i}
+        d={`M${x} ${y-3} L${x+1} ${y-1} L${x+3} ${y} L${x+1} ${y+1} L${x} ${y+3} L${x-1} ${y+1} L${x-3} ${y} L${x-1} ${y-1} Z`} 
+        fill="currentColor" 
+        className="opacity-40"
+      />
+    ))}
+  </svg>
+);
