@@ -25,6 +25,7 @@ export const getGeminiResponse = async (userPrompt, history=[],systemInstruction
             ],
             model: "llama-3.1-8b-instant", // Fast and very smart
             temperature: 0.7,
+            max_completion_tokens:500.
         });
 
         const content = chatCompletion.choices[0]?.message?.content;

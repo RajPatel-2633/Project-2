@@ -1,4 +1,7 @@
 import BirthProfile from "../models/BirthProfile.models.js";
+import BirthChart from "../models/BirthChart.models.js";
+import ChatSession from "../models/ChatSession.models.js";
+import ChatMessage from "../models/ChatMessage.models.js";
 import { BadRequestError, InternalServerError, NotFoundError } from "../utils/ApiError.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js"
 import asyncHandler from "../utils/AsyncHandler.utils.js";
@@ -102,9 +105,24 @@ const deleteProfile = asyncHandler(async(req,res)=>{
         throw new BadRequestError("Cannot Delete your primary profile. Please set another profile as primary first.")
     }
     
-    await BirthProfile.findByIdandDelete(id);
+    // Cascading Delete:
+    // 1. Delete associated BirthChart
+    await BirthChart.deleteOne({ profile_id: id });
+
+    // 2. Find and delete associated ChatSessions and their Messages
+    const sessions = await ChatSession.find({ profile_id: id });
+    const sessionIds = sessions.map(s => s._id);
+    
+    if (sessionIds.length > 0) {
+        await ChatMessage.deleteMany({ session_id: { $in: sessionIds } });
+        await ChatSession.deleteMany({ _id: { $in: sessionIds } });
+    }
+
+    // 3. Delete the profile itself
+    await BirthProfile.findByIdAndDelete(id);
+
     return res.status(200).json(
-        new ApiResponse(200, {}, "Profile Deleted Successfully")
+        new ApiResponse(200, {}, "Profile and associated data deleted successfully")
     );
 });
 
