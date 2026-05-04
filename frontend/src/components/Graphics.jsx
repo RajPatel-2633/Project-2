@@ -1,3 +1,6 @@
+import React from 'react';
+import { Sparkles } from 'lucide-react';
+
 export const DrawingChart = () => (
   <div className="relative w-12 h-12 lg:w-16 lg:h-16 text-astra-brown/80 flex-shrink-0">
     <style>
@@ -291,3 +294,79 @@ export const CelestialIllustration = ({ className = "" }) => (
     ))}
   </svg>
 );
+
+export const CosmicScene = ({ className = "" }) => {
+  const signs = ["♈", "♉", "♊", "♋", "♌", "♍", "♎", "♏", "♐", "♑", "♒", "♓"];
+  
+  return (
+    <div className={`relative ${className} flex items-center justify-center overflow-hidden min-h-[400px]`}>
+      <style>
+        {`
+          @keyframes rotateSlow { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+          @keyframes rotateFast { from { transform: rotate(360deg); } to { transform: rotate(0deg); } }
+          @keyframes pulseScale { 0%, 100% { transform: scale(1); opacity: 0.5; } 50% { transform: scale(1.1); opacity: 1; } }
+          @keyframes float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-10px); } }
+          .animate-rotate-slow { animation: rotateSlow 40s linear infinite; }
+          .animate-rotate-fast { animation: rotateFast 20s linear infinite; }
+          .animate-pulse-scale { animation: pulseScale 4s ease-in-out infinite; }
+          .animate-float { animation: float 6s ease-in-out infinite; }
+        `}
+      </style>
+
+      {/* Background Glow */}
+      <div className="absolute w-[500px] h-[500px] bg-amber-200/10 rounded-full blur-[100px] animate-pulse-scale"></div>
+
+      {/* Main Container */}
+      <svg viewBox="0 0 400 400" className="w-full h-full text-[#8B6E4A]">
+        {/* Outer Zodiac Ring */}
+        <g className="animate-rotate-slow origin-center">
+          <circle cx="200" cy="200" r="180" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="4 8" className="opacity-30" />
+          <circle cx="200" cy="200" r="160" fill="none" stroke="currentColor" strokeWidth="1" className="opacity-20" />
+          {signs.map((sign, i) => {
+            const angle = (i * 30 * Math.PI) / 180;
+            const x = 200 + 170 * Math.sin(angle);
+            const y = 200 - 170 * Math.cos(angle);
+            return (
+              <text key={i} x={x} y={y} fontSize="14" fill="currentColor" textAnchor="middle" dominantBaseline="middle" className="opacity-60" transform={`rotate(${i * 30}, ${x}, ${y})`}>
+                {sign}
+              </text>
+            );
+          })}
+        </g>
+
+        {/* Inner Geometric Pattern (Metatron's Cube inspired) */}
+        <g className="animate-rotate-fast origin-center opacity-20">
+          {[0, 60, 120, 180, 240, 300].map((angle, i) => (
+            <g key={i} transform={`rotate(${angle}, 200, 200)`}>
+              <circle cx="200" cy="110" r="40" fill="none" stroke="currentColor" strokeWidth="0.5" />
+              <path d="M200 110 L200 290" stroke="currentColor" strokeWidth="0.5" />
+              <path d="M200 110 L122 245" stroke="currentColor" strokeWidth="0.5" />
+              <path d="M200 110 L278 245" stroke="currentColor" strokeWidth="0.5" />
+            </g>
+          ))}
+        </g>
+
+        {/* Central Sun/Star */}
+        <g className="animate-float origin-center">
+          <circle cx="200" cy="200" r="40" fill="white" className="opacity-10" />
+          <circle cx="200" cy="200" r="25" fill="currentColor" className="opacity-20" />
+          <path d="M200 150 L210 190 L250 200 L210 210 L200 250 L190 210 L150 200 L190 190 Z" fill="currentColor" className="animate-pulse-scale" />
+          <Sparkles className="x-[190] y-[190] w-6 h-6 text-white" />
+        </g>
+
+        {/* Floating Constellation Dots */}
+        {[
+          [100, 100], [300, 100], [100, 300], [300, 300], 
+          [200, 50], [200, 350], [50, 200], [350, 200]
+        ].map(([x, y], i) => (
+          <circle key={i} cx={x} cy={y} r="2" fill="currentColor" className="animate-pulse opacity-40" style={{ animationDelay: `${i * 0.5}s` }} />
+        ))}
+      </svg>
+      
+      {/* Decorative Orbs */}
+      <div className="absolute top-10 left-10 w-2 h-2 bg-amber-400 rounded-full animate-float"></div>
+      <div className="absolute bottom-20 right-10 w-3 h-3 bg-orange-300 rounded-full animate-float" style={{ animationDelay: '2s' }}></div>
+      <div className="absolute top-1/2 right-1/4 w-1 h-1 bg-white rounded-full animate-pulse"></div>
+    </div>
+  );
+};

@@ -1,9 +1,19 @@
 import React, { useEffect, useState, useRef } from 'react';
 import { Send, User, Sparkles, Star, Map, Compass, TrendingUp, TrendingDown, Briefcase, Heart, Coins } from 'lucide-react';
-import { AnimatedKundliChart } from '../Graphics';
+import { AnimatedKundliChart, CosmicScene } from '../Graphics';
 import useChatStore from '../../store/useChatStore';
 import useAppStore from '../../store/useAppStore';
 import useAstroStore from '../../store/useAstroStore';
+
+// Deity Images
+import shivaImg from '../../assets/deities/shiva.png';
+import gauriImg from '../../assets/deities/gauri.png';
+import vishnuImg from '../../assets/deities/vishnu.png';
+import saraswatiImg from '../../assets/deities/saraswati.png';
+import ganeshaImg from '../../assets/deities/ganesha.png';
+import lakshmiImg from '../../assets/deities/lakshmi.png';
+import hanumanImg from '../../assets/deities/hanuman.png';
+import kartikeyaImg from '../../assets/deities/kartikeya.png';
 
 const rulingPlanets = {
   1: { name: "Sun", color: "from-amber-400 to-orange-500", quality: "Authority", element: "Fire", desc: "Leadership & Vitality" },
@@ -41,22 +51,41 @@ const calculateNumerology = (dobString) => {
 };
 
 const DeityIcon = ({ mulank }) => {
-  const icons = {
-    1: <path d="M12 2v2m0 16v2m8-10h2m-20 0h2m15.5-7.5l-1.5 1.5m-10.5 10.5l-1.5 1.5m13.5 0l-1.5-1.5m-10.5-10.5l-1.5-1.5M12 7a5 5 0 100 10 5 5 0 000-10z" />, // Sun / Shiva
-    2: <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z" />, // Moon / Gauri
-    3: <path d="M12 3v18M3 12h18m-3-9l-12 18m12 0L6 3" />, // Jupiter / Vishnu
-    4: <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />, // Rahu / Saraswati
-    5: <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />, // Mercury / Ganesha
-    6: <path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z" />, // Venus / Lakshmi
-    7: <path d="M12 3L4 9v12h16V9l-8-6z" />, // Ketu / Ganesha
-    8: <path d="M20 21l-2-2m-7 4l-3-3m5-2l3 3m1-7l-2-2m-2-1l-2-2m-5 4l3 3m1-7l-2-2m-2-1l-2-2" />, // Saturn / Hanuman
-    9: <path d="M12 2l3 6 6 3-6 3-3 6-3-6-6-3 6-3 3-6z" />, // Mars / Kartikeya
+  const images = {
+    1: shivaImg,      // Shiva
+    2: gauriImg,      // Gauri
+    3: vishnuImg,     // Vishnu
+    4: saraswatiImg,  // Saraswati
+    5: ganeshaImg,    // Ganesha
+    6: lakshmiImg,    // Lakshmi
+    7: ganeshaImg,    // Ganesha (Ketu)
+    8: hanumanImg,    // Hanuman
+    9: kartikeyaImg,  // Kartikeya
   };
 
+  const imgSrc = images[mulank] || images[1];
+
   return (
-    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" className="w-16 h-16 text-[#8B6E4A]">
-      {icons[mulank] || icons[1]}
-    </svg>
+    <div className="relative group/deity">
+      {/* Decorative Outer Glow */}
+      <div className="absolute -inset-4 bg-gradient-to-r from-amber-200/50 via-orange-100/30 to-amber-200/50 rounded-full blur-2xl opacity-0 group-hover/deity:opacity-100 transition-opacity duration-700"></div>
+      
+      <div className="relative w-48 h-48 rounded-full border-4 border-white shadow-2xl overflow-hidden transform transition-all duration-700 group-hover/deity:scale-105 group-hover/deity:rotate-1">
+        <img 
+          src={imgSrc} 
+          alt="Divine Deity" 
+          className="w-full h-full object-cover transition-transform duration-700 group-hover/deity:scale-110"
+        />
+        {/* Divine Overlay */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#4A3319]/40 via-transparent to-transparent opacity-60"></div>
+        <div className="absolute inset-0 border-[8px] border-white/20 rounded-full scale-95 pointer-events-none"></div>
+      </div>
+      
+      {/* Sparkles Effect */}
+      <div className="absolute -top-2 -right-2 w-8 h-8 text-amber-400 opacity-0 group-hover/deity:opacity-100 transition-opacity duration-500 delay-100">
+        <Sparkles className="w-full h-full animate-pulse" />
+      </div>
+    </div>
   );
 };
 
@@ -145,6 +174,63 @@ const InfoCard = ({ title, icon: Icon, children }) => (
     </div>
   </div>
 );
+
+const IpadFrame = ({ children }) => (
+  <div className="relative mx-auto w-full max-w-[550px] aspect-[3/4] bg-[#1a1a1a] rounded-[3rem] p-4 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border-[8px] border-[#2d2d2d] group transition-transform duration-700 hover:scale-[1.02]">
+    {/* Screen Overlay/Reflection */}
+    <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tr from-white/5 to-transparent pointer-events-none rounded-[2.5rem] z-20"></div>
+    
+    {/* Camera Notch */}
+    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-6 bg-[#1a1a1a] rounded-b-2xl z-30 flex items-center justify-center gap-2">
+      <div className="w-1.5 h-1.5 rounded-full bg-[#333] shadow-inner"></div>
+      <div className="w-1 h-1 rounded-full bg-[#1e1e1e]"></div>
+    </div>
+
+    {/* The Screen */}
+    <div className="relative w-full h-full bg-white/10 rounded-[2.5rem] overflow-hidden shadow-inner border border-white/5 z-10 flex flex-col">
+      {children}
+    </div>
+
+    {/* Side Buttons */}
+    <div className="absolute -right-2 top-24 w-1 h-12 bg-[#2d2d2d] rounded-r-md"></div>
+    <div className="absolute -right-2 top-40 w-1 h-20 bg-[#2d2d2d] rounded-r-md"></div>
+  </div>
+);
+
+const StreamingText = ({ content, isLast, role }) => {
+  const [displayed, setDisplayed] = useState(isLast && role === 'model' ? "" : content);
+  const [isDone, setIsDone] = useState(!(isLast && role === 'model'));
+
+  useEffect(() => {
+    if (isLast && role === 'model' && !isDone) {
+      if (displayed.length < content.length) {
+        const timeout = setTimeout(() => {
+          setDisplayed(content.slice(0, displayed.length + 1));
+        }, 15);
+        return () => clearTimeout(timeout);
+      } else {
+        setIsDone(true);
+      }
+    }
+  }, [content, displayed, isLast, role, isDone]);
+
+  // Handle cases where history is loaded - shouldn't animate
+  useEffect(() => {
+    if (!isLast) {
+      setDisplayed(content);
+      setIsDone(true);
+    }
+  }, [isLast, content]);
+
+  return (
+    <span>
+      {displayed}
+      {isLast && role === 'model' && !isDone && (
+        <span className="inline-block w-1.5 h-4 bg-[#8B6E4A] ml-1 animate-pulse align-middle" />
+      )}
+    </span>
+  );
+};
 
 const ChartResults = ({ chartData }) => {
   const { user } = useAppStore();
@@ -257,7 +343,7 @@ const ChartResults = ({ chartData }) => {
 
           <InfoCard title="Divine Guidance" icon={Sparkles}>
             <div className="flex flex-col items-center text-center space-y-4">
-              <div className="p-4 rounded-full bg-[#8B6E4A]/5 border border-[#8B6E4A]/10 shadow-inner">
+              <div className="relative mb-6">
                 <DeityIcon mulank={mulank} />
               </div>
               <div className="space-y-1">
@@ -277,81 +363,118 @@ const ChartResults = ({ chartData }) => {
         </div>
 
         {/* Call to Action & AI Chat */}
-        <div className="space-y-8 pt-12">
-          <div className="text-center space-y-3">
-             <h3 className="text-3xl md:text-4xl font-serif font-black text-[#4A3319]">Want to know more about yourself?</h3>
-             <p className="text-xl text-[#8B6E4A] italic font-medium">Get your questions answered by your own personal celestial astrologer.</p>
+        <div className="pt-24 pb-12">
+          <div className="text-center mb-16 space-y-4">
+             <h2 className="text-4xl md:text-6xl font-serif font-black text-[#4A3319] tracking-tight">
+               Got more questions?
+             </h2>
+             <p className="text-2xl text-[#8B6E4A] font-medium italic">
+               Ask your own personal Astrologer
+             </p>
+             <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#8B6E4A]/30 to-transparent mx-auto mt-6"></div>
           </div>
 
-          <div className="bg-parchment rounded-[48px] shadow-2xl border border-[#8B6E4A]/30 flex flex-col h-[700px] overflow-hidden relative group transition-all hover:shadow-[0_30px_70px_rgba(139,110,74,0.2)]">
-            {/* Decorative corner accents */}
-            <div className="absolute top-6 left-6 w-12 h-12 border-t-2 border-l-2 border-[#8B6E4A]/20 rounded-tl-3xl"></div>
-            <div className="absolute bottom-6 right-6 w-12 h-12 border-b-2 border-r-2 border-[#8B6E4A]/20 rounded-br-3xl"></div>
-
-            <div className="bg-gradient-to-r from-[#4A3319] via-[#8B6E4A] to-[#4A3319] p-10 text-white flex items-center justify-between shadow-lg z-10">
-              <div className="flex items-center gap-8">
-                <div className="w-20 h-20 rounded-3xl bg-white/10 flex items-center justify-center border-2 border-white/20 backdrop-blur-md shadow-2xl">
-                  <Sparkles className="w-10 h-10 text-[#FFF5E1] animate-pulse" />
-                </div>
-                <div>
-                  <h3 className="font-serif text-4xl font-bold tracking-tight">Astro AI Sage</h3>
-                  <p className="text-base text-white/70 font-medium tracking-[0.3em] uppercase">Private Consultation</p>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
+            {/* Left Column: Cosmic Illustration */}
+            <div className="hidden lg:flex flex-col items-center text-center space-y-10 order-2 lg:order-1">
+              <CosmicScene className="w-full max-w-[500px]" />
+              <div className="space-y-6 max-w-lg">
+                <h3 className="text-4xl md:text-5xl font-serif font-black text-[#4A3319] leading-tight">
+                  Consult the <span className="text-[#8B6E4A]">Cosmic Oracle</span>
+                </h3>
+                <p className="text-xl text-[#8B6E4A] italic font-medium leading-relaxed">
+                  The stars have whispered your secrets. Ask the Astro AI Sage to decode the celestial patterns of your destiny.
+                </p>
+                <div className="flex justify-center gap-4 text-[#8B6E4A]/40">
+                  <Star className="w-6 h-6 animate-pulse" />
+                  <Sparkles className="w-6 h-6 animate-pulse [animation-delay:0.5s]" />
+                  <Star className="w-6 h-6 animate-pulse [animation-delay:1s]" />
                 </div>
               </div>
-              {isChatLoading && (
-                <div className="flex items-center gap-3 bg-white/20 px-6 py-3 rounded-full border border-white/30 backdrop-blur-md">
-                   <div className="w-2 h-2 bg-white rounded-full animate-bounce"></div>
-                   <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:0.2s]"></div>
-                   <div className="w-2 h-2 bg-white rounded-full animate-bounce [animation-delay:0.4s]"></div>
-                </div>
-              )}
             </div>
 
-            <div className="flex-grow p-12 overflow-y-auto flex flex-col gap-8 bg-white/40 relative custom-scrollbar">
-              {messages.length === 0 ? (
-                <div className="flex flex-col items-center justify-center h-full text-center space-y-8 opacity-40">
-                  <div className="w-24 h-24 rounded-full bg-[#EBD6A7] flex items-center justify-center shadow-xl">
-                    <User className="w-12 h-12 text-[#8B6E4A]" />
+            {/* Right Column: iPad Chat */}
+            <div className="order-1 lg:order-2">
+              <div className="lg:hidden text-center space-y-4 mb-12">
+                 <h3 className="text-3xl font-serif font-black text-[#4A3319]">Astro AI Sage</h3>
+                 <p className="text-lg text-[#8B6E4A] italic">Private Consultation</p>
+              </div>
+
+              <IpadFrame>
+                <div className="flex flex-col h-full bg-parchment/90 backdrop-blur-sm">
+                  {/* iPad Chat Header */}
+                  <div className="bg-gradient-to-r from-[#4A3319] to-[#8B6E4A] p-6 text-white flex items-center justify-between shadow-lg shrink-0">
+                    <div className="flex items-center gap-4">
+                      <div className="w-12 h-12 rounded-xl bg-white/10 flex items-center justify-center border border-white/20 backdrop-blur-md">
+                        <Sparkles className="w-6 h-6 text-[#FFF5E1] animate-pulse" />
+                      </div>
+                      <div>
+                        <h3 className="font-serif text-xl font-bold tracking-tight">Astro Sage</h3>
+                        <p className="text-[10px] text-white/60 font-medium tracking-[0.2em] uppercase">Private AI</p>
+                      </div>
+                    </div>
+                    {isChatLoading && (
+                      <div className="flex gap-1">
+                        <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce"></div>
+                        <div className="w-1.5 h-1.5 bg-white rounded-full animate-bounce [animation-delay:0.2s]"></div>
+                      </div>
+                    )}
                   </div>
-                  <div className="max-w-md">
-                    <p className="text-2xl font-serif text-[#4A3319] font-bold">The stars are listening...</p>
-                    <p className="text-lg text-[#8B6E4A] mt-2">Ask about your career, love, or specific planetary transits.</p>
+
+                  {/* Chat Content */}
+                  <div className="flex-grow p-6 overflow-y-auto flex flex-col gap-6 custom-scrollbar bg-white/20">
+                    {messages.length === 0 ? (
+                      <div className="flex flex-col items-center justify-center h-full text-center space-y-6 opacity-40 px-4">
+                        <div className="w-16 h-16 rounded-full bg-[#EBD6A7] flex items-center justify-center shadow-lg">
+                          <User className="w-8 h-8 text-[#8B6E4A]" />
+                        </div>
+                        <div>
+                          <p className="text-xl font-serif text-[#4A3319] font-bold">The cosmos awaits...</p>
+                          <p className="text-sm text-[#8B6E4A] mt-1">What celestial questions do you have?</p>
+                        </div>
+                      </div>
+                    ) : (
+                      messages.map((msg, i) => (
+                        <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
+                          <div className={`max-w-[85%] p-4 rounded-2xl text-base leading-relaxed shadow-sm ${
+                            msg.role === 'user' 
+                              ? 'bg-[#4A3319] text-[#F5E6C4] rounded-tr-none' 
+                              : 'bg-white/80 text-[#4A3319] border border-[#8B6E4A]/10 rounded-tl-none'
+                          }`}>
+                            <StreamingText 
+                              content={msg.content} 
+                              isLast={i === messages.length - 1} 
+                              role={msg.role} 
+                            />
+                          </div>
+                        </div>
+                      ))
+                    )}
+                    <div ref={chatEndRef} />
                   </div>
-                </div>
-              ) : (
-                messages.map((msg, i) => (
-                  <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                    <div className={`max-w-[75%] p-6 rounded-3xl text-xl leading-relaxed shadow-sm transition-all hover:shadow-md ${
-                      msg.role === 'user' 
-                        ? 'bg-[#4A3319] text-[#F5E6C4] rounded-tr-none' 
-                        : 'bg-white text-[#4A3319] border border-[#8B6E4A]/10 rounded-tl-none'
-                    }`}>
-                      {msg.content}
+
+                  {/* Chat Input */}
+                  <div className="p-6 bg-white/40 border-t border-[#8B6E4A]/10 backdrop-blur-md shrink-0">
+                    <div className="relative flex items-center gap-3">
+                      <input
+                        type="text"
+                        value={chatInput}
+                        onChange={(e) => setChatInput(e.target.value)}
+                        onKeyPress={(e) => e.key === 'Enter' && handleSend()}
+                        placeholder="Ask the cosmos..."
+                        className="w-full bg-white/80 border border-[#8B6E4A]/20 rounded-2xl px-5 py-4 text-base focus:outline-none focus:border-[#4A3319] transition-all shadow-inner placeholder:text-[#8B6E4A]/40"
+                      />
+                      <button
+                        onClick={handleSend}
+                        disabled={isChatLoading || !chatInput.trim()}
+                        className="p-4 rounded-2xl bg-[#4A3319] text-white hover:bg-[#5D4037] transition-all disabled:opacity-50 shadow-lg active:scale-95"
+                      >
+                         <Send className="w-6 h-6" />
+                      </button>
                     </div>
                   </div>
-                ))
-              )}
-              <div ref={chatEndRef} />
-            </div>
-
-            <div className="p-10 bg-white/60 border-t border-[#8B6E4A]/20 backdrop-blur-md">
-              <div className="max-w-5xl mx-auto relative flex items-center gap-4">
-                <input
-                  type="text"
-                  value={chatInput}
-                  onChange={(e) => setChatInput(e.target.value)}
-                  onKeyPress={(e) => e.key === 'Enter' && handleSend()}
-                  placeholder="Whisper your question to the cosmos..."
-                  className="w-full bg-white/80 border border-[#8B6E4A]/20 rounded-3xl px-8 py-6 text-xl focus:outline-none focus:border-[#4A3319] transition-all shadow-inner placeholder:text-[#8B6E4A]/40"
-                />
-                <button
-                  onClick={handleSend}
-                  disabled={isChatLoading || !chatInput.trim()}
-                  className="p-6 rounded-3xl bg-[#4A3319] text-white hover:bg-[#5D4037] transition-all disabled:opacity-50 shadow-2xl active:scale-95"
-                >
-                   <Send className="w-8 h-8" />
-                </button>
-              </div>
+                </div>
+              </IpadFrame>
             </div>
           </div>
         </div>
