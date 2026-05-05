@@ -149,13 +149,17 @@ const TransitAlert = () => {
     );
   }
 
-  if (!transits || transits.length === 0) {
+  const upcomingTransits = (transits || [])
+    .filter(t => new Date(t.starts_at) >= new Date().setHours(0,0,0,0))
+    .slice(0, 9);
+
+  if (upcomingTransits.length === 0) {
     return (
       <div className="w-full bg-[#E5CAA0] border border-[#CFA876] rounded-2xl p-6 flex items-center gap-4 text-[#8B6E4A]">
         <Sparkles className="w-6 h-6 flex-shrink-0" />
         <div>
           <p className="font-bold text-[#4A3319] text-sm">All is quiet in the cosmos</p>
-          <p className="text-xs mt-0.5">No upcoming major transits found. Check back soon.</p>
+          <p className="text-xs mt-0.5">No upcoming major transits found for the near future.</p>
         </div>
       </div>
     );
@@ -163,7 +167,7 @@ const TransitAlert = () => {
 
   return (
     <div className="w-full flex flex-col gap-4">
-      {transits.map(transit => (
+      {upcomingTransits.map(transit => (
         <SingleTransit
           key={transit._id}
           transit={transit}
