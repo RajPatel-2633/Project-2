@@ -203,7 +203,7 @@ const BirthDetailsForm = ({ onSubmit }) => {
 
             <button
               type="submit"
-              className="w-full py-4 mt-6 rounded-xl bg-gradient-to-r from-[#C4A15A] to-[#8C642A] text-[#FFF5E1] font-bold text-sm tracking-widest shadow-[0_4px_14px_rgba(139,110,74,0.4)] hover:shadow-[0_6px_20px_rgba(139,110,74,0.6)] hover:-translate-y-0.5 transition-all active:translate-y-0 uppercase"
+              className="w-full py-4 mt-6 rounded-xl bg-[#4A3319] text-[#FFF5E1] font-bold text-sm tracking-widest shadow-[0_4px_14px_rgba(74,51,25,0.4)] hover:bg-[#3D2B15] hover:shadow-[0_6px_20px_rgba(74,51,25,0.6)] hover:-translate-y-0.5 transition-all active:translate-y-0 uppercase"
             >
               Generate Chart
             </button>

@@ -351,7 +351,9 @@ export const CosmicScene = ({ className = "" }) => {
           <circle cx="200" cy="200" r="40" fill="white" className="opacity-10" />
           <circle cx="200" cy="200" r="25" fill="currentColor" className="opacity-20" />
           <path d="M200 150 L210 190 L250 200 L210 210 L200 250 L190 210 L150 200 L190 190 Z" fill="currentColor" className="animate-pulse-scale" />
-          <Sparkles className="x-[190] y-[190] w-6 h-6 text-white" />
+          <foreignObject x="188" y="188" width="24" height="24">
+            <Sparkles className="w-6 h-6 text-white" />
+          </foreignObject>
         </g>
 
         {/* Floating Constellation Dots */}

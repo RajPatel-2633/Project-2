@@ -65,17 +65,17 @@ const PersonForm = ({ title, subtitle, formData, onChange }) => {
       </div>
 
       {/* Form Container with parchment style */}
-      <div className="w-full max-w-md bg-parchment p-6 lg:p-8 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#8B6E4A]/30 relative group hover:shadow-[0_12px_40px_rgb(0,0,0,0.15)] transition-all">
+      <div className="w-full max-w-md bg-parchment p-8 lg:p-10 rounded-2xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-[#8B6E4A]/30 relative group transition-all">
         {/* Decorative Corner Ornaments */}
         <div className="absolute top-2 left-2 w-4 h-4 border-t-2 border-l-2 border-[#8B6E4A]/40 transition-all group-hover:border-[#C4A15A]"></div>
         <div className="absolute top-2 right-2 w-4 h-4 border-t-2 border-r-2 border-[#8B6E4A]/40 transition-all group-hover:border-[#C4A15A]"></div>
         <div className="absolute bottom-2 left-2 w-4 h-4 border-b-2 border-l-2 border-[#8B6E4A]/40 transition-all group-hover:border-[#C4A15A]"></div>
         <div className="absolute bottom-2 right-2 w-4 h-4 border-b-2 border-r-2 border-[#8B6E4A]/40 transition-all group-hover:border-[#C4A15A]"></div>
 
-        <div className="space-y-5 relative z-10">
-          <div className="grid grid-cols-1 gap-4">
-            <div className="space-y-1.5">
-              <label htmlFor={`name-${title}`} className="text-xs font-bold text-[#5c3a1d] tracking-wide uppercase">Full Name</label>
+        <div className="space-y-8 relative z-10">
+          <div className="space-y-6">
+            <div className="space-y-2">
+              <label htmlFor={`name-${title}`} className="text-xs font-bold text-[#5c3a1d] tracking-wide uppercase">Full Name <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 id={`name-${title}`}
@@ -85,19 +85,19 @@ const PersonForm = ({ title, subtitle, formData, onChange }) => {
                 required
                 autoComplete="name"
                 placeholder="Seeker of Stars"
-                className="w-full px-4 py-3 rounded-lg bg-white/60 border border-[#8B6E4A]/40 text-[#4A3319] placeholder-[#8B6E4A]/50 focus:outline-none focus:ring-2 focus:ring-[#C19E63] transition-all font-medium text-sm"
+                className="w-full px-5 py-4 rounded-xl bg-white/60 border border-[#8B6E4A]/40 text-[#4A3319] placeholder-[#8B6E4A]/50 focus:outline-none focus:ring-2 focus:ring-[#C19E63] transition-all font-medium text-sm"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label htmlFor={`gender-${title}`} className="text-xs font-bold text-[#5c3a1d] tracking-wide uppercase">Gender</label>
+            <div className="space-y-2">
+              <label htmlFor={`gender-${title}`} className="text-xs font-bold text-[#5c3a1d] tracking-wide uppercase">Gender Essence <span className="text-red-500">*</span></label>
               <select
                 id={`gender-${title}`}
                 name="gender"
                 value={formData.gender || 'PREFER NOT TO SAY'}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-white/60 border border-[#8B6E4A]/40 text-[#4A3319] focus:outline-none focus:ring-2 focus:ring-[#C19E63] transition-all font-medium text-sm cursor-pointer"
+                className="w-full px-5 py-4 rounded-xl bg-white/60 border border-[#8B6E4A]/40 text-[#4A3319] focus:outline-none focus:ring-2 focus:ring-[#C19E63] transition-all font-medium text-sm cursor-pointer"
               >
                 <option value="PREFER NOT TO SAY">Select Essence</option>
                 <option value="MALE">Masculine</option>
@@ -106,9 +106,9 @@ const PersonForm = ({ title, subtitle, formData, onChange }) => {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label htmlFor={`dob-${title}`} className="text-xs font-bold text-[#5c3a1d] tracking-wide uppercase">Date of Birth</label>
+          <div className="grid grid-cols-1 gap-6">
+            <div className="space-y-2">
+              <label htmlFor={`dob-${title}`} className="text-xs font-bold text-[#5c3a1d] tracking-wide uppercase">Date of Birth <span className="text-red-500">*</span></label>
               <input
                 type="date"
                 id={`dob-${title}`}
@@ -117,12 +117,12 @@ const PersonForm = ({ title, subtitle, formData, onChange }) => {
                 onChange={handleChange}
                 required
                 autoComplete="bday"
-                className="w-full px-4 py-3 rounded-lg bg-white/60 border border-[#8B6E4A]/40 text-[#4A3319] focus:outline-none focus:ring-2 focus:ring-[#C19E63] transition-all font-medium text-sm"
+                className="w-full px-5 py-4 rounded-xl bg-white/60 border border-[#8B6E4A]/40 text-[#4A3319] focus:outline-none focus:ring-2 focus:ring-[#C19E63] transition-all font-medium text-sm"
               />
             </div>
 
-            <div className="space-y-1.5">
-              <label htmlFor={`tob-${title}`} className="text-xs font-bold text-[#5c3a1d] tracking-wide uppercase">Time of Birth</label>
+            <div className="space-y-2">
+              <label htmlFor={`tob-${title}`} className="text-xs font-bold text-[#5c3a1d] tracking-wide uppercase">Time of Birth <span className="text-red-500">*</span></label>
               <input
                 type="time"
                 id={`tob-${title}`}
@@ -130,14 +130,14 @@ const PersonForm = ({ title, subtitle, formData, onChange }) => {
                 value={formData.tob || ''}
                 onChange={handleChange}
                 required
-                className="w-full px-4 py-3 rounded-lg bg-white/60 border border-[#8B6E4A]/40 text-[#4A3319] focus:outline-none focus:ring-2 focus:ring-[#C19E63] transition-all font-medium text-sm"
+                className="w-full px-5 py-4 rounded-xl bg-white/60 border border-[#8B6E4A]/40 text-[#4A3319] focus:outline-none focus:ring-2 focus:ring-[#C19E63] transition-all font-medium text-sm"
               />
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-4">
-            <div className="space-y-1.5">
-              <label htmlFor={`city-${title}`} className="text-xs font-bold text-[#5c3a1d] tracking-wide uppercase">City of Birth</label>
+          <div className="grid grid-cols-1 gap-6">
+            <div className="space-y-2">
+              <label htmlFor={`city-${title}`} className="text-xs font-bold text-[#5c3a1d] tracking-wide uppercase">City of Birth <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 id={`city-${title}`}
@@ -147,11 +147,11 @@ const PersonForm = ({ title, subtitle, formData, onChange }) => {
                 required
                 autoComplete="address-level2"
                 placeholder="Mumbai"
-                className="w-full px-4 py-3 rounded-lg bg-white/60 border border-[#8B6E4A]/40 text-[#4A3319] placeholder-[#8B6E4A]/50 focus:outline-none focus:ring-2 focus:ring-[#C19E63] transition-all font-medium text-sm"
+                className="w-full px-5 py-4 rounded-xl bg-white/60 border border-[#8B6E4A]/40 text-[#4A3319] placeholder-[#8B6E4A]/50 focus:outline-none focus:ring-2 focus:ring-[#C19E63] transition-all font-medium text-sm"
               />
             </div>
-            <div className="space-y-1.5">
-              <label htmlFor={`country-${title}`} className="text-xs font-bold text-[#5c3a1d] tracking-wide uppercase">Country</label>
+            <div className="space-y-2">
+              <label htmlFor={`country-${title}`} className="text-xs font-bold text-[#5c3a1d] tracking-wide uppercase">Country <span className="text-red-500">*</span></label>
               <input
                 type="text"
                 id={`country-${title}`}
@@ -161,24 +161,28 @@ const PersonForm = ({ title, subtitle, formData, onChange }) => {
                 required
                 autoComplete="country-name"
                 placeholder="India"
-                className="w-full px-4 py-3 rounded-lg bg-white/60 border border-[#8B6E4A]/40 text-[#4A3319] placeholder-[#8B6E4A]/50 focus:outline-none focus:ring-2 focus:ring-[#C19E63] transition-all font-medium text-sm"
+                className="w-full px-5 py-4 rounded-xl bg-white/60 border border-[#8B6E4A]/40 text-[#4A3319] placeholder-[#8B6E4A]/50 focus:outline-none focus:ring-2 focus:ring-[#C19E63] transition-all font-medium text-sm"
               />
             </div>
           </div>
 
           {(formData.latitude || isFetchingLocation || locationError) && (
-            <div className="flex gap-6 pt-4 border-t border-[#C4A15A]/10">
-              <div className="space-y-1.5 flex-1">
-                <label className="text-[9px] font-black text-[#C4A15A] tracking-widest uppercase">LATITUDE {isFetchingLocation && '...'}</label>
-                <div className="px-4 py-3 rounded-xl bg-black/5 border border-black/5 text-[#4A3319] text-xs font-bold font-mono">{formData.latitude || '—'}</div>
+            <div className="grid grid-cols-3 gap-4 pt-6 border-t border-[#C4A15A]/10">
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-[#C4A15A] tracking-widest uppercase text-center block">LATITUDE</label>
+                <div className="px-4 py-3 rounded-xl bg-black/5 border border-black/5 text-[#4A3319] text-xs font-bold font-mono text-center">{isFetchingLocation ? '...' : formData.latitude || '—'}</div>
               </div>
-              <div className="space-y-1.5 flex-1">
-                <label className="text-[9px] font-black text-[#C4A15A] tracking-widest uppercase">LONGITUDE {isFetchingLocation && '...'}</label>
-                <div className="px-4 py-3 rounded-xl bg-black/5 border border-black/5 text-[#4A3319] text-xs font-bold font-mono">{formData.longitude || '—'}</div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-[#C4A15A] tracking-widest uppercase text-center block">LONGITUDE</label>
+                <div className="px-4 py-3 rounded-xl bg-black/5 border border-black/5 text-[#4A3319] text-xs font-bold font-mono text-center">{isFetchingLocation ? '...' : formData.longitude || '—'}</div>
+              </div>
+              <div className="space-y-1">
+                <label className="text-[10px] font-black text-[#C4A15A] tracking-widest uppercase text-center block">TIMEZONE</label>
+                <div className="px-4 py-3 rounded-xl bg-black/5 border border-black/5 text-[#4A3319] text-xs font-bold font-mono text-center truncate">{isFetchingLocation ? '...' : formData.timezone || '—'}</div>
               </div>
             </div>
           )}
-          {locationError && <p className="text-[10px] text-red-500 font-bold uppercase tracking-widest mt-2">{locationError}</p>}
+          {locationError && <p className="text-[10px] text-red-500 font-bold uppercase tracking-widest mt-2 text-center">{locationError}</p>}
         </div>
       </div>
     </div>
