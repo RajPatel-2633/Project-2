@@ -7,17 +7,9 @@ const getTransits = asyncHandler(async(req,res)=>{
     const {sign} = req.query;
     const now = new Date();
 
-    // Query for transits that are either:
-    // 1. Starting in the future
-    // 2. Currently active (started in past, ends in future)
+    // Query specifically for pure upcoming transits (starting today or later)
     let query = {
-        $or: [
-            { starts_at: { $gte: now } },
-            { 
-                starts_at: { $lte: now },
-                ends_at: { $gte: now }
-            }
-        ]
+        starts_at: { $gte: now }
     };
 
     if(sign){
