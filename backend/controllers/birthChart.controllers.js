@@ -5,6 +5,7 @@ import { NotFoundError } from "../utils/ApiError.utils.js";
 import {calculateVedicChart} from "../services/astrology.service.js"
 import BirthProfile from "../models/BirthProfile.models.js";
 import { getGeminiResponse } from "../services/ai.service.js";
+import { extractJson } from "../utils/json.utils.js";
 
 
 const generateChart = asyncHandler(async(req,res)=>{
@@ -34,15 +35,14 @@ const generateChart = asyncHandler(async(req,res)=>{
     // AI Interpretation Generation
     let interpretations = {};
     try {
-        const systemInstruction = `You are an expert Vedic astrologer. Return strictly valid JSON containing your interpretations based on the user's chart. The JSON must exactly match these keys: exalted_planets, strong_placements, weaker_placements, profession, love_life, wealth. Each value should be a 1-2 sentence paragraph. Do NOT include markdown backticks or the word json. Just raw JSON.`;
+        const systemInstruction = `You are an expert Vedic astrologer. Return strictly valid JSON containing your interpretations based on the user's chart. The JSON must exactly match these keys: exalted_planets, strong_placements, weaker_placements, profession, love_life, wealth. Each value should be a 1-2 sentence paragraph.`;
         
         const userPrompt = `Generate interpretations for: Lagna: ${chartResults.ascendant}. Nakshatra: ${chartResults.nakshatra}. Planets: ${JSON.stringify(chartResults.planets)}`;
 
         const aiText = await getGeminiResponse(userPrompt, [], systemInstruction);
+        if (!aiText) throw new Error("AI returned no content");
         
-        // Clean backticks just in case
-        const cleaned = aiText.replace(/```json/g, '').replace(/```/g, '').trim();
-        interpretations = JSON.parse(cleaned);
+        interpretations = extractJson(aiText);
 
     } catch (err) {
         console.error("AI Interpretation Error:", err);

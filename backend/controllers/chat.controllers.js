@@ -9,20 +9,20 @@ import ApiResponse from "../utils/ApiResponse.utils.js";
 
 
 
-const initialiseChat = asyncHandler(async(req,res)=>{
-    const {user_id,profile_id,title} = req.body;
-    if(!user_id || !profile_id){
+const initialiseChat = asyncHandler(async (req, res) => {
+    const { user_id, profile_id, title } = req.body;
+    if (!user_id || !profile_id) {
         throw new BadRequestError("All Fields are required");
     }
 
     const profile = await BirthProfile.findById(profile_id);
-    const birthChart = await BirthChart.findOne({profile_id});
+    const birthChart = await BirthChart.findOne({ profile_id });
 
-    if(!profile || !birthChart){
+    if (!profile || !birthChart) {
         throw new NotFoundError("Birth Chart or Profile not found");
     }
 
-    const chatsession = await ChatSession.create({user_id,profile_id,title:title || `Consultation for ${profile.name}`});
+    const chatsession = await ChatSession.create({ user_id, profile_id, title: title || `Consultation for ${profile.name}` });
 
     const systemPersona = "You are Astro AI, a professional Vedic astrologer. Use the provided birth chart data to give accurate, empathetic, and culturally relevant insights. Always refer to the user by their name.";
     // System Context for Gemini
@@ -41,31 +41,34 @@ const initialiseChat = asyncHandler(async(req,res)=>{
         role: "system",
         content: `You are now reading the chart of ${profile.name}. Context: ${chartContext}`
     });
-    
+
     // Generate a dynamic greeting from Gemini
-    const greetingPrompt = `Give a warm, 1-sentence greeting to ${profile.name} and ask how you can help them today.`;
-    const result = await getGeminiResponse(greetingPrompt, `${systemPersona}\n${chartContext}`)
-    if (!result) {
-       throw new Error("Empty response from GROQ API");
+    let greetingText = `Namaste ${profile.name}, I am Astro AI. I have analyzed your ${birthChart.ascendant} ascendant chart. How can I guide you today?`;
+    
+    try {
+        const greetingPrompt = `Give a very short, warm Vedic greeting to ${profile.name} and ask how you can help them with their ${birthChart.ascendant} chart today.`;
+        // Use a shorter timeout or just a fast call
+        const result = await getGeminiResponse(greetingPrompt, [], `${systemPersona}\n${chartContext}`);
+        if (result) greetingText = result;
+    } catch (aiErr) {
+        console.error("AI Greeting timeout/error, using fallback");
     }
 
-    const greetingText = result;
-    console.log("AI Responded:", greetingText);
-
+    console.log("AI Greeting Status: Ready");
 
     const initialMessage = await ChatMessage.create({
         session_id:chatsession._id,
         role:"model",
         content:greetingText
     });
-    
 
-    return res.status(201).json(new ApiResponse(201,{
-        session:chatsession,
+
+    return res.status(201).json(new ApiResponse(201, {
+        session: chatsession,
         greeting: initialMessage.content
     },
-    "Chat initialised successfully"
-));
+        "Chat initialised successfully"
+    ));
 
 });
 
@@ -88,7 +91,7 @@ const sendMessage = asyncHandler(async (req, res) => {
     // 2. Format history for Groq/Llama
     const formattedMessages = historyMessages.map(msg => ({
         // Map 'model' to 'assistant', keep 'user' and 'system' as they are
-        role: msg.role === "model" ? "assistant" : msg.role, 
+        role: msg.role === "model" ? "assistant" : msg.role,
         content: msg.content,
     }));
 
@@ -108,28 +111,28 @@ const sendMessage = asyncHandler(async (req, res) => {
     }, "Message sent successfully"));
 });
 
-const getChatHistory = asyncHandler(async(req,res)=>{
-    const {sessionId} = req.params;
+const getChatHistory = asyncHandler(async (req, res) => {
+    const { sessionId } = req.params;
 
     const session = await ChatSession.findById(sessionId);
-    if(!session){
+    if (!session) {
         throw new NotFoundError("Chat Session Not Found");
     }
 
     const messages = await ChatMessage.find({
         session_id: sessionId,
-        role:{$ne:"system"}
-    }).sort({createdAt:1});
+        role: { $ne: "system" }
+    }).sort({ createdAt: 1 });
 
-    return res.status(200).json(new ApiResponse(200,messages,"Chat History retrieved successfully"));
+    return res.status(200).json(new ApiResponse(200, messages, "Chat History retrieved successfully"));
 
 });
 
-const getUserSessions = asyncHandler(async(req,res)=>{
+const getUserSessions = asyncHandler(async (req, res) => {
     const userId = req.user.id;
-    const sessions = await ChatSession.find({user_id: userId}).sort({createdAt:-1}).populate("profile_id","name");
+    const sessions = await ChatSession.find({ user_id: userId }).sort({ createdAt: -1 }).populate("profile_id", "name");
 
-    return res.status(200).json(new ApiResponse(200,sessions,"User sessions retrieved successfully"));
+    return res.status(200).json(new ApiResponse(200, sessions, "User sessions retrieved successfully"));
 });
 
-export {initialiseChat,sendMessage,getChatHistory,getUserSessions};
+export { initialiseChat, sendMessage, getChatHistory, getUserSessions };
