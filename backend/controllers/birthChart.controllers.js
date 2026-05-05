@@ -35,9 +35,20 @@ const generateChart = asyncHandler(async(req,res)=>{
     // AI Interpretation Generation
     let interpretations = {};
     try {
-        const systemInstruction = `You are an expert Vedic astrologer. Return strictly valid JSON containing your interpretations based on the user's chart. The JSON must exactly match these keys: exalted_planets, strong_placements, weaker_placements, profession, love_life, wealth. Each value should be a 1-2 sentence paragraph.`;
+        const systemInstruction = `You are a world-class Vedic Astrologer. 
+        I will provide you with planet positions and their pre-calculated "Dignity" (Exalted, Debilitated, Own Sign, etc.).
+        CRITICAL: Use ONLY the provided Dignity status for your analysis. Do NOT hallucinate rules (e.g., do not say Mars is exalted in Sagittarius if the data says Neutral).
+        Return strictly valid JSON with these keys: exalted_planets, strong_placements, weaker_placements, profession, love_life, wealth. 
+        Each value must be a 1-2 sentence poetic, insightful paragraph.`;
         
-        const userPrompt = `Generate interpretations for: Lagna: ${chartResults.ascendant}. Nakshatra: ${chartResults.nakshatra}. Planets: ${JSON.stringify(chartResults.planets)}`;
+        const userPrompt = `Lagna: ${chartResults.ascendant}. 
+        Nakshatra: ${chartResults.nakshatra} (Pada ${chartResults.nakshatra_pada}). 
+        Planets Data: ${JSON.stringify(chartResults.planets.map(p => ({
+            name: p.name,
+            sign: p.sign,
+            house: p.house,
+            dignity: p.dignity
+        })))}`;
 
         const aiText = await getGeminiResponse(userPrompt, [], systemInstruction);
         if (!aiText) throw new Error("AI returned no content");
