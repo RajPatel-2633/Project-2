@@ -42,13 +42,13 @@ const loginUser = asyncHandler(async(req,res,next)=>{
         throw new UnauthorizedError("Incorrect Password");
     }
     const accessCookieOptions={
-        maxAge:1000*60*15,
+        maxAge:1000*60*45,
         httpOnly:true,
         secure:true,
         sameSite:"lax"
     }
     const refreshCookieOptions={
-        maxAge:1000*60*15,
+        maxAge:1000*60*60*24*7,
         httpOnly:true,
         secure:true,
         sameSite:"lax"
@@ -58,7 +58,7 @@ const loginUser = asyncHandler(async(req,res,next)=>{
         id:user._id,
         role:user.role
     },process.env.ACCESS_SECRET,{
-        expiresIn:"15m"
+        expiresIn:"45m"
     });
 
     const refreshToken = jwt.sign({
