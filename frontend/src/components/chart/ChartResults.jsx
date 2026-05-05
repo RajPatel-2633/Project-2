@@ -69,18 +69,18 @@ const DeityIcon = ({ mulank }) => {
     <div className="relative group/deity">
       {/* Decorative Outer Glow */}
       <div className="absolute -inset-4 bg-gradient-to-r from-amber-200/50 via-orange-100/30 to-amber-200/50 rounded-full blur-2xl opacity-0 group-hover/deity:opacity-100 transition-opacity duration-700"></div>
-      
+
       <div className="relative w-48 h-48 rounded-full border-4 border-white shadow-2xl overflow-hidden transform transition-all duration-700 group-hover/deity:scale-105 group-hover/deity:rotate-1">
-        <img 
-          src={imgSrc} 
-          alt="Divine Deity" 
+        <img
+          src={imgSrc}
+          alt="Divine Deity"
           className="w-full h-full object-cover transition-transform duration-700 group-hover/deity:scale-110"
         />
         {/* Divine Overlay */}
         <div className="absolute inset-0 bg-gradient-to-t from-[#4A3319]/40 via-transparent to-transparent opacity-60"></div>
         <div className="absolute inset-0 border-[8px] border-white/20 rounded-full scale-95 pointer-events-none"></div>
       </div>
-      
+
       {/* Sparkles Effect */}
       <div className="absolute -top-2 -right-2 w-8 h-8 text-amber-400 opacity-0 group-hover/deity:opacity-100 transition-opacity duration-500 delay-100">
         <Sparkles className="w-full h-full animate-pulse" />
@@ -106,12 +106,12 @@ const getDivineAdvice = (mulank) => {
 
 const NumerologyCard = ({ title, value, type }) => {
   const planet = rulingPlanets[value] || rulingPlanets[1];
-  
+
   return (
     <div className="bg-parchment rounded-[32px] border border-[#8B6E4A]/30 shadow-[0_10px_40px_rgba(0,0,0,0.06)] overflow-hidden flex flex-col group transition-all hover:shadow-[0_15px_50px_rgba(139,110,74,0.15)] relative">
       <div className="absolute top-2 left-2 w-4 h-4 border-t border-l border-[#8B6E4A]/40 rounded-tl-xl"></div>
       <div className="absolute bottom-2 right-2 w-4 h-4 border-b border-r border-[#8B6E4A]/40 rounded-br-xl"></div>
-      
+
       <div className="p-8 pb-4 flex justify-between items-start relative overflow-hidden">
         <div className="relative z-10 space-y-1">
           <h4 className="text-5xl font-serif font-black text-[#4A3319] leading-tight">{planet.name}</h4>
@@ -143,10 +143,10 @@ const NumerologyCard = ({ title, value, type }) => {
         </div>
 
         <div className="p-2 relative overflow-hidden transition-colors">
-           <p className="text-sm font-black text-[#8B6E4A] uppercase tracking-wider mb-2">Cosmic Essence</p>
-           <p className="text-lg text-[#4A3319] font-medium leading-relaxed italic">
-             "{planet.desc}. Your celestial path is illuminated by this frequency."
-           </p>
+          <p className="text-sm font-black text-[#8B6E4A] uppercase tracking-wider mb-2">Cosmic Essence</p>
+          <p className="text-lg text-[#4A3319] font-medium leading-relaxed italic">
+            "{planet.desc}. Your celestial path is illuminated by this frequency."
+          </p>
         </div>
       </div>
     </div>
@@ -157,19 +157,19 @@ const InfoCard = ({ title, icon: Icon, children }) => (
   <div className="bg-parchment rounded-[32px] border border-[#8B6E4A]/30 shadow-[0_10px_40px_rgba(0,0,0,0.06)] overflow-hidden flex flex-col group transition-all hover:shadow-[0_15px_50px_rgba(139,110,74,0.15)] relative min-h-[320px]">
     <div className="absolute top-2 left-2 w-4 h-4 border-t border-l border-[#8B6E4A]/40 rounded-tl-xl"></div>
     <div className="absolute bottom-2 right-2 w-4 h-4 border-b border-r border-[#8B6E4A]/40 rounded-br-xl"></div>
-    
+
     <div className="p-8 pb-4 flex items-center gap-4 border-b border-[#8B6E4A]/10">
       <div className="w-14 h-14 rounded-2xl bg-white shadow-lg flex items-center justify-center text-[#8B6E4A]">
-         <Icon className="w-8 h-8" />
+        <Icon className="w-8 h-8" />
       </div>
       <h4 className="text-2xl font-serif font-black text-[#4A3319] leading-tight">{title}</h4>
     </div>
 
     <div className="p-8 flex-grow">
       <div className="h-full flex flex-col justify-center">
-         <div className="text-[#4A3319] text-lg md:text-xl leading-relaxed font-medium">
-           {children}
-         </div>
+        <div className="text-[#4A3319] text-lg md:text-xl leading-relaxed font-medium">
+          {children}
+        </div>
       </div>
     </div>
   </div>
@@ -179,7 +179,7 @@ const IpadFrame = ({ children }) => (
   <div className="relative mx-auto w-full max-w-[550px] aspect-[3/4] bg-[#1a1a1a] rounded-[3rem] p-4 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.5)] border-[8px] border-[#2d2d2d] group transition-transform duration-700 hover:scale-[1.02]">
     {/* Screen Overlay/Reflection */}
     <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-tr from-white/5 to-transparent pointer-events-none rounded-[2.5rem] z-20"></div>
-    
+
     {/* Camera Notch */}
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-20 h-6 bg-[#1a1a1a] rounded-b-2xl z-30 flex items-center justify-center gap-2">
       <div className="w-1.5 h-1.5 rounded-full bg-[#333] shadow-inner"></div>
@@ -260,7 +260,7 @@ const ChartResults = ({ chartData }) => {
 
   const handleSend = () => {
     if (chatInput.trim() && !isChatLoading) {
-      sendMessage(chatInput);
+      sendMessage(chatInput, user?._id, activeProfileId);
       setChatInput('');
     }
   };
@@ -310,9 +310,9 @@ const ChartResults = ({ chartData }) => {
               </div>
             ) : "Placements at birth."}
           </InfoCard>
-          
+
           <InfoCard title="Current Transits" icon={Map}>
-             <div className="grid grid-cols-1 gap-y-2 text-xl">
+            <div className="grid grid-cols-1 gap-y-2 text-xl">
               <div className="flex justify-between border-b border-[#8B6E4A]/5 pb-1"><span>Sun:</span> <span className="font-bold">Pisces 20°</span></div>
               <div className="flex justify-between border-b border-[#8B6E4A]/5 pb-1"><span>Moon:</span> <span className="font-bold text-lg">Virgo 11°</span></div>
               <div className="flex justify-between border-b border-[#8B6E4A]/5 pb-1"><span>Mars:</span> <span className="font-bold text-lg">Aqua 4°</span></div>
@@ -364,13 +364,13 @@ const ChartResults = ({ chartData }) => {
         {/* Call to Action & AI Chat */}
         <div className="pt-24 pb-12">
           <div className="text-center mb-16 space-y-4">
-             <h2 className="text-4xl md:text-6xl font-serif font-black text-[#4A3319] tracking-tight">
-               Got more questions?
-             </h2>
-             <p className="text-2xl text-[#8B6E4A] font-medium italic">
-               Ask your own personal Astrologer
-             </p>
-             <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#8B6E4A]/30 to-transparent mx-auto mt-6"></div>
+            <h2 className="text-4xl md:text-6xl font-serif font-black text-[#4A3319] tracking-tight">
+              Got more questions?
+            </h2>
+            <p className="text-2xl text-[#8B6E4A] font-medium italic">
+              Ask your own personal Astrologer
+            </p>
+            <div className="w-24 h-1 bg-gradient-to-r from-transparent via-[#8B6E4A]/30 to-transparent mx-auto mt-6"></div>
           </div>
 
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center">
@@ -393,10 +393,10 @@ const ChartResults = ({ chartData }) => {
             </div>
 
             {/* Right Column: iPad Chat */}
-            <div className="order-1 lg:order-2">
+            <div className="order-1 lg:order-2 lg:pt-20">
               <div className="lg:hidden text-center space-y-4 mb-12">
-                 <h3 className="text-3xl font-serif font-black text-[#4A3319]">Astro AI Sage</h3>
-                 <p className="text-lg text-[#8B6E4A] italic">Private Consultation</p>
+                <h3 className="text-3xl font-serif font-black text-[#4A3319]">Astro AI Sage</h3>
+                <p className="text-lg text-[#8B6E4A] italic">Private Consultation</p>
               </div>
 
               <IpadFrame>
@@ -427,23 +427,24 @@ const ChartResults = ({ chartData }) => {
                         <div className="w-16 h-16 rounded-full bg-[#EBD6A7] flex items-center justify-center shadow-lg">
                           <User className="w-8 h-8 text-[#8B6E4A]" />
                         </div>
-                        <div>
-                          <p className="text-xl font-serif text-[#4A3319] font-bold">The cosmos awaits...</p>
-                          <p className="text-sm text-[#8B6E4A] mt-1">What celestial questions do you have?</p>
+                        <div className="space-y-4">
+                          <p className="text-xl font-serif text-[#4A3319] font-bold italic">
+                            "Namaste {chartData?.profile_id?.name || 'Seeker'}. I am reading your {chartData?.ascendant} ascendant chart. How may I guide you today?"
+                          </p>
+                          <p className="text-xs text-[#8B6E4A] uppercase tracking-[0.2em] font-black opacity-60">Consultation Live</p>
                         </div>
                       </div>
                     ) : (
                       messages.map((msg, i) => (
                         <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
-                          <div className={`max-w-[85%] p-4 rounded-2xl text-base leading-relaxed shadow-sm ${
-                            msg.role === 'user' 
-                              ? 'bg-[#4A3319] text-[#F5E6C4] rounded-tr-none' 
+                          <div className={`max-w-[85%] p-4 rounded-2xl text-base leading-relaxed shadow-sm ${msg.role === 'user'
+                              ? 'bg-[#4A3319] text-[#F5E6C4] rounded-tr-none'
                               : 'bg-white/80 text-[#4A3319] border border-[#8B6E4A]/10 rounded-tl-none'
-                          }`}>
-                            <StreamingText 
-                              content={msg.content} 
-                              isLast={i === messages.length - 1} 
-                              role={msg.role} 
+                            }`}>
+                            <StreamingText
+                              content={msg.content}
+                              isLast={i === messages.length - 1}
+                              role={msg.role}
                             />
                           </div>
                         </div>
@@ -468,7 +469,7 @@ const ChartResults = ({ chartData }) => {
                         disabled={isChatLoading || !chatInput.trim()}
                         className="p-4 rounded-2xl bg-[#4A3319] text-white hover:bg-[#5D4037] transition-all disabled:opacity-50 shadow-lg active:scale-95"
                       >
-                         <Send className="w-6 h-6" />
+                        <Send className="w-6 h-6" />
                       </button>
                     </div>
                   </div>
