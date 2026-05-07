@@ -9,8 +9,6 @@ const groq = new Groq({
 
 export const getGeminiResponse = async (userPrompt, history=[],systemInstruction = "") => {
     try {
-
-
         const chatCompletion = await groq.chat.completions.create({
             messages: [
                 ...history,
