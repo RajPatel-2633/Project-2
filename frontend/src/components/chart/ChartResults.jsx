@@ -1,4 +1,5 @@
 import React, { useEffect, useState, useRef } from 'react';
+import ReactMarkdown from 'react-markdown';
 import { Send, User, Sparkles, Star, Map, Compass, TrendingUp, TrendingDown, Briefcase, Heart, Coins } from 'lucide-react';
 import { AnimatedKundliChart, CosmicScene } from '../Graphics';
 import useChatStore from '../../store/useChatStore';
@@ -205,8 +206,8 @@ const StreamingText = ({ content, isLast, role }) => {
     if (isLast && role === 'model' && !isDone) {
       if (displayed.length < content.length) {
         const timeout = setTimeout(() => {
-          setDisplayed(content.slice(0, displayed.length + 1));
-        }, 15);
+          setDisplayed(content.slice(0, displayed.length + 2)); // Slightly faster increment
+        }, 10);
         return () => clearTimeout(timeout);
       } else {
         setIsDone(true);
@@ -223,12 +224,32 @@ const StreamingText = ({ content, isLast, role }) => {
   }, [isLast, content]);
 
   return (
-    <span>
-      {displayed}
+    <div className={role === 'model' 
+      ? "prose prose-sm max-w-none prose-p:leading-relaxed prose-headings:text-[#4A3319] prose-headings:font-black prose-headings:uppercase prose-strong:text-[#4A3319] prose-strong:font-black"
+      : "text-[#F5E6C4] font-medium"
+    }>
+      {role === 'model' ? (
+        <ReactMarkdown
+          components={{
+            h1: ({node, ...props}) => <h1 className="text-lg font-black uppercase mb-2 border-b border-[#8B6E4A]/20 pb-1" {...props} />,
+            h2: ({node, ...props}) => <h2 className="text-base font-black uppercase mb-1" {...props} />,
+            h3: ({node, ...props}) => <h3 className="text-sm font-black uppercase mb-1" {...props} />,
+            p: ({node, ...props}) => <p className="mb-2 last:mb-0" {...props} />,
+            ul: ({node, ...props}) => <ul className="list-disc ml-4 mb-2" {...props} />,
+            ol: ({node, ...props}) => <ol className="list-decimal ml-4 mb-2" {...props} />,
+            li: ({node, ...props}) => <li className="mb-1" {...props} />,
+            strong: ({node, ...props}) => <strong className="font-black text-[#4A3319]" {...props} />,
+          }}
+        >
+          {displayed}
+        </ReactMarkdown>
+      ) : (
+        <span>{displayed}</span>
+      )}
       {isLast && role === 'model' && !isDone && (
         <span className="inline-block w-1.5 h-4 bg-[#8B6E4A] ml-1 animate-pulse align-middle" />
       )}
-    </span>
+    </div>
   );
 };
 
