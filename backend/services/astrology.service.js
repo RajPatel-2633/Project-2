@@ -14,17 +14,49 @@ const NAKSHATRAS = [
 ];
 
 /**
- * Calculates the precise Lahiri Ayanamsha (Chitra Paksha) for a given date.
- * Formula: 22.4601 + (Year - 1900) * 0.01397
+ * Calculates the precise Lahiri Ayanamsha (Chitra Paksha) for a given Julian Date.
  */
-const getPreciseAyanamsha = (jsDate) => {
-    const year = jsDate.getFullYear();
-    const month = jsDate.getMonth() + 1;
-    const day = jsDate.getDate();
+const getPreciseAyanamsha = (tt) => {
+    const T = tt / 36525;
+    return 23.853352 + 1.396971 * T + 0.000309 * T * T;
+};
 
-    // Decimal year calculation
-    const decimalYear = year + (month - 1) / 12 + (day - 1) / 365.25;
-    return 22.4601 + (decimalYear - 1900) * 0.0139722;
+/**
+ * Calculates the Mean Longitude of the Moon's Ascending Node (Rahu).
+ */
+const getMeanRahu = (tt) => {
+    const T = tt / 36525;
+    let node = 125.04452 - 1934.136261 * T + 0.0020708 * T * T + (T * T * T) / 450000;
+    return (node % 360 + 360) % 360;
+};
+
+/**
+ * Helper to convert local birth time + timezone into a UTC Date.
+ */
+const getCorrectUtcDate = (dob, tob, tz) => {
+    try {
+        const date = new Date(`${dob}T${tob}:00Z`);
+        const formatter = new Intl.DateTimeFormat('en-US', {
+            timeZone: tz,
+            year: 'numeric', month: 'numeric', day: 'numeric',
+            hour: 'numeric', minute: 'numeric', second: 'numeric',
+            hour12: false
+        });
+        const parts = formatter.formatToParts(date);
+        const getPart = (type) => parseInt(parts.find(p => p.type === type).value);
+        
+        const localDate = Date.UTC(
+            getPart('year'), getPart('month') - 1, getPart('day'),
+            getPart('hour') === 24 ? 0 : getPart('hour'), 
+            getPart('minute'), getPart('second')
+        );
+        
+        const diff = date.getTime() - localDate;
+        return new Date(date.getTime() + diff);
+    } catch (e) {
+        console.warn(`Timezone conversion failed for ${tz}, falling back to UTC.`);
+        return new Date(`${dob}T${tob}:00Z`);
+    }
 };
 
 /**
@@ -52,13 +84,13 @@ const getVedicDignity = (planetName, sign) => {
     return "Neutral";
 };
 
-export const calculateVedicChart = (dob, tob, lat, lng) => {
+export const calculateVedicChart = (dob, tob, lat, lng, timezone = "UTC") => {
     try {
-        const jsDate = new Date(`${dob}T${tob}:00Z`);
+        const jsDate = getCorrectUtcDate(dob, tob, timezone);
         if (isNaN(jsDate.getTime())) throw new Error(`Invalid Date: ${dob}T${tob}`);
 
         const targetTime = new AstroTime(jsDate);
-        const ayanamsha = getPreciseAyanamsha(jsDate);
+        const ayanamsha = getPreciseAyanamsha(targetTime.tt);
         const obs = new Observer(Number(lat), Number(lng), 0);
 
         // --- ASCENDANT CALCULATION ---
@@ -97,22 +129,29 @@ export const calculateVedicChart = (dob, tob, lat, lng) => {
             const currentSign = RASHI_NAMES[planet_sign_index];
             const house = ((planet_sign_index - ascendant_sign_index + 12) % 12) + 1;
 
+            // Retrograde Check (Compare position 1 hour ago)
+            const timeMinus = new AstroTime(new Date(jsDate.getTime() - 3600000));
+            const equMinus = Equator(b.id, timeMinus, obs, false, false);
+            const eclMinus = Ecliptic(equMinus.vec);
+            const rawLongMinus = (eclMinus.elon - ayanamsha + 360) % 360;
+            
+            let diff = rawLong - rawLongMinus;
+            if (diff > 180) diff -= 360;
+            if (diff < -180) diff += 360;
+            const is_retrograde = diff < 0;
+
             return {
                 name: b.name,
                 sign: currentSign,
                 degree: parseFloat((rawLong % 30).toFixed(2)),
                 house: house,
                 dignity: getVedicDignity(b.name, currentSign),
-                is_retrograde: false
+                is_retrograde: is_retrograde
             };
         });
 
         // --- RAHU & KETU (LUNAR NODES) ---
-        // Calculating Rahu as the Ascending Node of the Moon
-        const moonEqu = Equator(Body.Moon, targetTime, obs, false, false);
-        const moonEcl = Ecliptic(moonEqu.vec);
-        // Rahu is traditionally calculated relative to the Moon's orbit, here we use an astronomical approximation
-        const rahuRawLong = (moonEcl.elon - ayanamsha + 180 + 360) % 360; // 180 degree offset for approximation
+        const rahuRawLong = (getMeanRahu(targetTime.tt) - ayanamsha + 360) % 360;
         const ketuRawLong = (rahuRawLong + 180) % 360;
 
         const rahu_sign_index = Math.floor(rahuRawLong / 30);
@@ -138,6 +177,8 @@ export const calculateVedicChart = (dob, tob, lat, lng) => {
         );
 
         // --- NAKSHATRA ---
+        const moonEqu = Equator(Body.Moon, targetTime, obs, false, false);
+        const moonEcl = Ecliptic(moonEqu.vec);
         const moonLong = (moonEcl.elon - ayanamsha + 360) % 360;
         const nakIndex = Math.floor(moonLong / (360 / 27));
         const pada = Math.floor((moonLong % (360 / 27)) / (360 / 108)) + 1;
@@ -152,7 +193,8 @@ export const calculateVedicChart = (dob, tob, lat, lng) => {
             raw_data: {
                 source: "astronomy-engine-sidereal",
                 ayanamsha_applied: parseFloat(ayanamsha.toFixed(4)),
-                system: "Lahiri / Chitra Paksha"
+                system: "Lahiri / Chitra Paksha (High Precision)",
+                timezone_offset_applied: (targetTime.date.getTime() - new Date(`${dob}T${tob}:00Z`).getTime()) / 3600000
             }
         };
 
@@ -160,4 +202,4 @@ export const calculateVedicChart = (dob, tob, lat, lng) => {
         console.error(" Astrology Service Error:", err.message);
         throw err;
     }
-};
+};

@@ -3,14 +3,23 @@ import Panchang from "../models/Panchang.models.js";
 import { ApiError, NotFoundError } from "../utils/ApiError.utils.js";
 import ApiResponse from "../utils/ApiResponse.utils.js";
 import asyncHandler from "../utils/AsyncHandler.utils.js";
+import { seedAstroData } from "../utils/seedAstroData.js";
 import { getTodayDate } from "../utils/todaysdate.utils.js";
 
 const getAllHoroscopes = asyncHandler(async(req,res)=>{
     const today = getTodayDate();
-    const data = await Horoscope.find({date:today}); 
+    const signs = ["aries", "taurus", "gemini", "cancer", "leo", "virgo", "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces"];
+    let data = await Horoscope.find({date:today}); 
+
+    // Auto-seed if data is missing or incomplete (less than 12 signs)
+    if(!data || data.length < 12){
+        console.log(`🕒 [AUTO-SEED] Horoscope incomplete (${data?.length || 0}/12) for today, generating now...`);
+        await seedAstroData(true);
+        data = await Horoscope.find({date:today});
+    }
 
     if(!data || data.length === 0){
-        throw new NotFoundError("Horoscope data not found for today. Please seed the database.");
+        throw new NotFoundError("Horoscope data could not be retrieved even after auto-seeding.");
     }
 
     return res.status(200).json(new ApiResponse(200,data,"Daily Horoscopes fetched successfully"));
@@ -33,9 +42,16 @@ const getHoroscopeBySign = asyncHandler(async(req,res)=>{
 
 const getPanchang = asyncHandler(async(req,res)=>{ 
         const today = getTodayDate();
-        const data = await Panchang.findOne({date:today});
+        let data = await Panchang.findOne({date:today});
+
         if(!data){
-            throw new NotFoundError("Panchang Data not found for today");
+            console.log("🕒 [AUTO-SEED] Panchang missing for today, generating now...");
+            await seedAstroData(true);
+            data = await Panchang.findOne({date:today});
+        }
+
+        if(!data){
+            throw new NotFoundError("Panchang Data could not be retrieved even after auto-seeding.");
         }
 
         return res.status(200).json(new ApiResponse(200,data,"Panchang for Today fetched successfully"));

@@ -41,7 +41,7 @@ const matchProfile = asyncHandler(async(req,res)=>{
         if (!chart) {
             console.log(` Generating new BirthChart for ${data.name}`);
             // Service is synchronous, so no await needed, but calling it inside a try
-            const vedicData = calculateVedicChart(data.dob, data.tob, data.latitude, data.longitude);
+            const vedicData = calculateVedicChart(data.dob, data.tob, data.latitude, data.longitude, data.timezone);
 
             chart = await BirthChart.create({
                 profile_id: profile._id,

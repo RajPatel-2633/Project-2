@@ -19,7 +19,7 @@ export const runTransitAI = async(targetMonth = "")=>{
         - impact_level: string (high/medium/low/positive)
         - title: string (short catchy title)
         - description: string (2-sentence astrological meaning)
-        - affects_signs: string[] (array of 2-4 affected zodiac signs)
+        - affects_sign: string[] (array of 2-4 affected zodiac signs)
 
         Ensure the dates are accurate for ${month} ${year}. Start response with '[' and end with ']'.
     `;

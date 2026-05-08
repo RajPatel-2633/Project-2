@@ -26,7 +26,7 @@ export const initialiseTransitAutomation = async()=>{
             await runTransitAI();
             console.log("Finished");
         },{
-            schedule:true,
+            scheduled:true,
             timezone:"Asia/Kolkata"
         });
     }catch(err){

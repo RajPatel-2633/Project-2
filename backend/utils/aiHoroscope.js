@@ -38,10 +38,17 @@ export const generateAllSignsAIHoroscope = async (dateStr) => {
         if (!aiResponse) return null;
 
         const data = extractJson(aiResponse);
-        if (!data || !data.horoscopes) throw new Error("Invalid horoscope data format from AI");
+        
+        // Handle both { "horoscopes": [...] } and directly [...]
+        const horoscopesList = Array.isArray(data) ? data : (data.horoscopes || data.horoscope);
+        
+        if (!horoscopesList || !Array.isArray(horoscopesList)) {
+            console.error("❌ Invalid AI Horoscope Data Structure:", data);
+            throw new Error("AI failed to provide a valid horoscopes array.");
+        }
 
         const results = [];
-        for (const h of data.horoscopes) {
+        for (const h of horoscopesList) {
             const updated = await Horoscope.findOneAndUpdate(
                 { sign: h.sign.toLowerCase(), date: dateStr },
                 {

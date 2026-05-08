@@ -29,7 +29,8 @@ const generateChart = asyncHandler(async(req,res)=>{
         formattedDob, 
         profile.tob, 
         profile.latitude, 
-        profile.longitude
+        profile.longitude,
+        profile.timezone
     );
 
     // AI Interpretation Generation

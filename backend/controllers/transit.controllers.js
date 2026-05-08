@@ -6,10 +6,14 @@ import asyncHandler from "../utils/AsyncHandler.utils.js";
 const getTransits = asyncHandler(async(req,res)=>{
     const {sign} = req.query;
     const now = new Date();
+    
+    // Calculate today's start to include transits that started earlier today
+    const todayStart = new Date(now);
+    todayStart.setHours(0, 0, 0, 0);
 
-    // Query specifically for pure upcoming transits (starting today or later)
+    // Query for transits starting today or in the future
     let query = {
-        starts_at: { $gte: now }
+        starts_at: { $gte: todayStart }
     };
 
     if(sign){
@@ -17,7 +21,7 @@ const getTransits = asyncHandler(async(req,res)=>{
     }
 
     const transits = await Transit.find(query).sort({starts_at:1}).limit(9);
-    return res.status(200).json(new ApiResponse(200,transits,"Upcoming Transists retrieved"));
+    return res.status(200).json(new ApiResponse(200,transits,"Upcoming Transits retrieved"));
 });
 
 
@@ -64,9 +68,9 @@ const unSubscribeAlert = asyncHandler(async(req,res)=>{
         return res.status(404).json(
             new ApiResponse(404,null,"Alert not found or unauthorised")
         );
-
-        return res.status(200).json(new ApiResponse(200,null,"Successfully unsubsribed from transition alert"))
     }
+
+    return res.status(200).json(new ApiResponse(200,null,"Successfully unsubscribed from transition alert"));
 });
 
 export {getTransits,subscribeToTransit,getUserAlerts,unSubscribeAlert};

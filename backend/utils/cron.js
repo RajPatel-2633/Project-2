@@ -15,6 +15,9 @@ export const initCronJobs = () => {
         } catch (error) {
             console.error("❌ [CRON] Daily AI horoscope sync failed:", error.message);
         }
+    }, {
+        scheduled: true,
+        timezone: "Asia/Kolkata"
     });
 
     console.log("🚀 [CRON] Daily horoscope scheduler initialized.");

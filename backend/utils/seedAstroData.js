@@ -17,7 +17,7 @@ export const seedAstroData = async (useAI = false) => {
             if (!transitSuccess) console.warn("⚠️ AI Transit generation failed, using existing ones.");
         }
 
-        for (let i = 0; i < (useAI ? 1 : 30); i++) {
+        for (let i = 0; i < (useAI ? 2 : 30); i++) {
             const d = new Date();
             d.setDate(d.getDate() + i);
             const dateStr = d.toISOString().split('T')[0];
@@ -57,13 +57,16 @@ export const seedAstroData = async (useAI = false) => {
                 console.log(`ℹ️ Panchang already exists for ${dateStr}, skipping.`);
             }
 
-            // 2. Seed Horoscopes (Check if at least one exists for this date)
-            const existingHoroscope = await Horoscope.findOne({ date: dateStr });
-            if (!existingHoroscope || (useAI && !existingHoroscope.is_ai)) {
+            // 2. Seed Horoscopes (Check if all 12 signs exist for this date)
+            const horoscopeCount = await Horoscope.countDocuments({ date: dateStr });
+            const hasNonAI = await Horoscope.findOne({ date: dateStr, is_ai: false });
+
+            if (horoscopeCount < 12 || (useAI && hasNonAI)) {
                 if (useAI) {
+                    console.log(`✨ Generating AI Horoscopes for ${dateStr}...`);
                     const horoscopeSuccess = await generateAllSignsAIHoroscope(dateStr);
                     if (!horoscopeSuccess) throw new Error(`AI Horoscope generation failed for ${dateStr}`);
-                } else {
+                } else if (horoscopeCount < 12) {
                     const horoscopePromises = signs.map(sign => {
                         return Horoscope.findOneAndUpdate(
                             { sign, date: dateStr },
@@ -134,6 +137,7 @@ export const seedAstroData = async (useAI = false) => {
         }
 
     } catch (error) {
-        console.error(" Seeding failed:", error.message);
+        console.error("❌ Seeding failed dramatically:", error.message);
+        console.error(error.stack);
     }
-};
+};
