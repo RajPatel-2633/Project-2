@@ -9,6 +9,18 @@ const useAstroDataStore = create((set) => ({
   isLoadingHoroscopes: false,
   isLoadingSelected: false,
   error: null,
+  lastFetchedDate: null, // Tracks which day the data belongs to
+
+  checkAndRefresh: async () => {
+    const today = new Date().toISOString().split('T')[0];
+    const { lastFetchedDate, fetchPanchang, fetchAllHoroscopes } = useAstroDataStore.getState();
+    
+    if (lastFetchedDate !== today) {
+      console.log("🕒 New day detected, refreshing astro data...");
+      await Promise.all([fetchPanchang(), fetchAllHoroscopes()]);
+      set({ lastFetchedDate: today });
+    }
+  },
 
   fetchPanchang: async () => {
     set({ isLoadingPanchang: true, error: null });

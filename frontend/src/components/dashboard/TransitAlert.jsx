@@ -149,8 +149,11 @@ const TransitAlert = () => {
     );
   }
 
+  const todayStart = new Date();
+  todayStart.setHours(0, 0, 0, 0);
+
   const upcomingTransits = (transits || [])
-    .filter(t => new Date(t.starts_at) >= new Date().setHours(0,0,0,0))
+    .filter(t => new Date(t.starts_at) >= todayStart)
     .slice(0, 9);
 
   if (upcomingTransits.length === 0) {

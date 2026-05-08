@@ -82,14 +82,14 @@ const LoginForm = () => {
           <button
             type="submit"
             disabled={isAuthLoading}
-            className="w-full py-3 rounded-lg bg-gradient-to-r from-astra-orange to-[#EEB86D] text-astra-brown font-semibold shadow-md hover:shadow-lg transition-all active:scale-[0.98] mt-6 disabled:opacity-70"
+            className="w-full py-4 mt-6 rounded-xl bg-[#4A3319] text-[#FFF5E1] font-bold text-sm tracking-widest shadow-[0_4px_14px_rgba(74,51,25,0.4)] hover:bg-[#3D2B15] hover:shadow-[0_6px_20px_rgba(74,51,25,0.6)] hover:-translate-y-0.5 transition-all active:translate-y-0 uppercase disabled:opacity-70"
           >
             {isAuthLoading ? 'Loading...' : 'Login'}
           </button>
         </form>
 
         <p className="mt-6 text-sm text-astra-brown text-center">
-          New here? <Link to="/signup" className="font-bold hover:underline">Sign Up</Link>
+          New here? <Link to="/signup" className="font-black text-[#4A3319] hover:underline decoration-2 underline-offset-4">Sign Up</Link>
         </p>
 
       </div>

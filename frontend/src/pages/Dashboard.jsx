@@ -11,6 +11,7 @@ import useAppStore from '../store/useAppStore';
 import useAstroStore from '../store/useAstroStore';
 import ServiceCarousel from '../components/dashboard/ServiceCarousel';
 import { useEffect } from 'react';
+import useAstroDataStore from '../store/useAstroDataStore';
 
 // Graceful fallback shown if any dashboard card crashes
 const CardFallback = ({ error }) => (
@@ -33,11 +34,20 @@ const LoadingFallback = () => (
 const Dashboard = () => {
   const user = useAppStore(state => state.user);
   const { profiles, fetchProfiles } = useAstroStore();
+  const { checkAndRefresh } = useAstroDataStore();
   const firstName = user?.name?.split(' ')[0] || 'Seeker';
 
   useEffect(() => {
     fetchProfiles();
-  }, [fetchProfiles]);
+    
+    // Initial check and set interval for auto-refresh at midnight
+    checkAndRefresh();
+    const interval = setInterval(() => {
+      checkAndRefresh();
+    }, 1000 * 60 * 5); // Check every 5 minutes
+
+    return () => clearInterval(interval);
+  }, [fetchProfiles, checkAndRefresh]);
 
   const isFirstTime = !profiles || profiles.length === 0;
 

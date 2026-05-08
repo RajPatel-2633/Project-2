@@ -123,7 +123,7 @@ const HoroscopeModal = ({ signData, onClose }) => {
               onClick={async () => {
                 const toastId = toast.loading("Syncing with the cosmos...");
                 try {
-                  await axiosInstance.get('/astro/seed-db?ai=true');
+                  await axiosInstance.get('/astro/seed-db?ai=true&force=true');
                   toast.success("Stars aligned! Refreshing...", { id: toastId });
                   setTimeout(() => window.location.reload(), 1000);
                 } catch (e) {
@@ -245,7 +245,7 @@ const HoroscopeCarousel = () => {
             onClick={async () => {
               const toastId = toast.loading("Syncing with AI...");
               try {
-                await axiosInstance.get('/astro/seed-db?ai=true');
+                await axiosInstance.get('/astro/seed-db?ai=true&force=true');
                 toast.success("Stars aligned! Refreshing...", { id: toastId });
                 setTimeout(() => window.location.reload(), 1000);
               } catch (e) {
